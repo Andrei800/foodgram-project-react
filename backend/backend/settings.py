@@ -10,9 +10,8 @@ SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agdol^##esfghsghsghaeretbtzgl9(
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'backend']
+ALLOWED_HOSTS = ['*']
 
-INTERNAL_IPS = ['127.0.0.1', 'localhost', 'backend']
 
 INSTALLED_APPS = [
     'api',
@@ -69,7 +68,7 @@ DATABASES = {
         'NAME': os.getenv('DB_NAME', default='postgres'),
         'USER': os.getenv('POSTGRES_USER', default='postgres'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
-        'HOST': os.getenv('DB_HOST', default='db'),
+        'HOST': os.getenv('DB_HOST', default='localhost'),
         'PORT': os.getenv('DB_PORT', default='5432'),
     }
 }
@@ -115,18 +114,18 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.BrowsableAPIRenderer',)
 }
 
-#DJOSER = {
-  #  'PERMISSIONS': {
-   #     'user_list': ['rest_framework.permissions.AllowAny'],
-    #    'user': ['rest_framework.permissions.IsAuthenticated'],
-    #},
+DJOSER = {
+    'PERMISSIONS': {
+        'user_list': ['rest_framework.permissions.AllowAny'],
+        'user': ['rest_framework.permissions.IsAuthenticated'],
+    },
 
-    #'SERIALIZERS': {
-     #   'user_create': 'api.serializers.RegistrationSerializer',
-      #  'user': 'api.serializers.RegistrationSerializer',
-       # 'current_user': 'api.serializers.RegistrationSerializer',
-    #}
-#}
+    'SERIALIZERS': {
+        'user_create': 'api.serializers.RegistrationSerializer',
+        'user': 'api.serializers.RegistrationSerializer',
+        'current_user': 'api.serializers.RegistrationSerializer',
+    }
+}
 
 AUTH_USER_MODEL = 'users.User'
 
