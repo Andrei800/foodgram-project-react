@@ -4,6 +4,7 @@ from users.models import User, Subscription
 from recipes.models import (Cart, Favorite, Ingredient,
                             IngredientRecipes, Recipes, Tag, TagRecipes)
 
+
 class IngredientRecipeInline(admin.TabularInline):
 
     model = IngredientRecipes
@@ -25,7 +26,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class IngredientAdmin(admin.ModelAdmin):
- 
+
     list_display = ('name', 'measurement_unit')
     search_fields = ('name', )
     empty_value_display = '-пусто-'
@@ -33,7 +34,6 @@ class IngredientAdmin(admin.ModelAdmin):
 
 
 class TagAdmin(admin.ModelAdmin):
-    """Parametrs of the tags admin zone."""
 
     list_display = ('name', 'color', 'slug')
     search_fields = ('name', )
@@ -42,7 +42,6 @@ class TagAdmin(admin.ModelAdmin):
 
 
 class CartAdmin(admin.ModelAdmin):
-    """Parametrs of the cart admin zone."""
 
     list_display = ('user', 'recipes', 'id')
     search_fields = ('user', )
@@ -51,7 +50,6 @@ class CartAdmin(admin.ModelAdmin):
 
 
 class FavoriteAdmin(admin.ModelAdmin):
-    """Parametrs of the favorite recipes admin zone."""
 
     list_display = ('user', 'recipes')
     search_fields = ('user', )
@@ -60,7 +58,6 @@ class FavoriteAdmin(admin.ModelAdmin):
 
 
 class RecipesAdmin(admin.ModelAdmin):
-    """Parametrs of the recipes admin zone."""
 
     inlines = (IngredientRecipeInline, TagRecipeInline,)
     list_display = ('name', 'author', 'cooking_time',
@@ -70,13 +67,11 @@ class RecipesAdmin(admin.ModelAdmin):
     list_filter = ('name', 'author', 'tags')
 
     def count_favorite(self, obj):
-        """Count the number of the recipe additions to favorites."""
         return Favorite.objects.filter(recipes=obj).count()
     count_favorite.short_description = 'Число добавлении в избранное'
 
 
 class SubscriptionAdmin(admin.ModelAdmin):
-    """Parametrs of the admin zone."""
 
     list_display = ('user', 'following')
     search_fields = ('user', )

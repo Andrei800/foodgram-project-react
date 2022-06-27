@@ -288,7 +288,8 @@ class SubscriptionSerializer(serializers.ModelSerializer,
         request = self.context.get('request')
         if request.GET.get('recipes_limit'):
             recipes_limit = int(request.GET.get('recipes_limit'))
-            queryset = Recipes.objects.filter(author__id=obj.id).order_by('id')[
+            queryset = Recipes.objects.filter \
+                (author__id=obj.id).order_by('id')[
                 :recipes_limit]
         else:
             queryset = Recipes.objects.filter(author__id=obj.id).order_by('id')
