@@ -4,8 +4,6 @@ from users.models import User, Subscription
 from recipes.models import (Cart, Favorite, Ingredient,
                             IngredientRecipes, Recipes, Tag, TagRecipes)
 
-
-
 class IngredientRecipeInline(admin.TabularInline):
 
     model = IngredientRecipes

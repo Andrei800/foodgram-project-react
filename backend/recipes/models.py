@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import Exists, OuterRef
 from users.models import User
 
+
 class Ingredient(models.Model):
     name = models.CharField(
         max_length=200,

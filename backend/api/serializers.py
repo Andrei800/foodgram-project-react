@@ -2,7 +2,7 @@ from djoser.serializers import UserCreateSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
 from users.models import User, Subscription
-from recipes.models import (Cart, Favorite, Ingredient,IngredientRecipes,
+from recipes.models import (Cart, Favorite, Ingredient, IngredientRecipes,
                             Recipes, Tag, TagRecipes)
 
 
@@ -153,9 +153,7 @@ class CartSerializer(serializers.Serializer):
     image = Base64ImageField(max_length=None, use_url=False,)
 
 
-class RecipesSerializer(serializers.ModelSerializer,
-                       CommonRecipe):
-    """Creating serializer of the recipes model."""
+class RecipesSerializer(serializers.ModelSerializer, CommonRecipe):
 
     author = RegistrationSerializer(read_only=True)
     tags = TagSerializer(many=True)
@@ -165,7 +163,6 @@ class RecipesSerializer(serializers.ModelSerializer,
     is_in_shopping_cart = serializers.SerializerMethodField()
 
     class Meta:
-        """Meta-parameter of serializer of the recipes model."""
 
         model = Recipes
         fields = ('id', 'author', 'name', 'image', 'text',
@@ -173,8 +170,7 @@ class RecipesSerializer(serializers.ModelSerializer,
                   'is_in_shopping_cart', 'is_favorited')
 
 
-class RecipesSerializerPost(serializers.ModelSerializer,
-                           CommonRecipe):
+class RecipesSerializerPost(serializers.ModelSerializer, CommonRecipe):
     """Creating serializer of the ingredients post model."""
 
     author = RegistrationSerializer(read_only=True)
@@ -283,14 +279,12 @@ class SubscriptionSerializer(serializers.ModelSerializer,
     recipes = serializers.SerializerMethodField()
 
     class Meta:
-        """Meta-parameters of serializer of the subscriptions list."""
 
         model = User
         fields = ('email', 'id', 'username', 'first_name',
                   'last_name', 'is_subscribed', 'recipes', 'recipes_count')
 
     def get_recipes(self, obj):
-        """Get recipes of author in depend on the "recipes_limit" parameter."""
         request = self.context.get('request')
         if request.GET.get('recipes_limit'):
             recipes_limit = int(request.GET.get('recipes_limit'))
