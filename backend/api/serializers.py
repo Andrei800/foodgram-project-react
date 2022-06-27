@@ -1,15 +1,9 @@
 from djoser.serializers import UserCreateSerializer
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers
-from users.models import User
-from recipes.models import Cart
-from recipes.models import Favorite
-from recipes.models import Ingredient
-from recipes.models import IngredientRecipe
-from recipes.models import Recipe
-from recipes.models import Subscribe
-from recipes.models import Tag
-from recipes.models import TagRecipe
+from users.models import User, Subscription
+from recipes.models import (Cart, Favorite, Ingredient,IngredientRecipes,
+                            Recipes, Tag, TagRecipes)
 
 
 class CommonSubscribed(metaclass=serializers.SerializerMetaclass):
@@ -22,7 +16,7 @@ class CommonSubscribed(metaclass=serializers.SerializerMetaclass):
         request = self.context.get('request')
         if request.user.is_anonymous:
             return False
-        if Subscribe.objects.filter(
+        if Subscription.objects.filter(
                 user=request.user, following__id=obj.id).exists():
             return True
         else:
@@ -65,7 +59,7 @@ class CommonCount(metaclass=serializers.SerializerMetaclass):
 
     def get_recipes_count(self, obj):
         """Count the number of author's recipes."""
-        return Recipe.objects.filter(author__id=obj.id).count()
+        return Recipes.objects.filter(author__id=obj.id).count()
 
 
 class RegistrationSerializer(UserCreateSerializer, CommonSubscribed):
@@ -112,7 +106,7 @@ class IngredientAmountSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta-parameter serializer of the ingredients model in the recipe."""
 
-        model = IngredientRecipe
+        model = IngredientRecipes
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
 
@@ -124,7 +118,7 @@ class IngredientAmountRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta-parameter of serializer of the ingredients amount."""
 
-        model = IngredientRecipe
+        model = IngredientRecipes
         fields = ('id', 'amount')
 
 
@@ -159,7 +153,7 @@ class CartSerializer(serializers.Serializer):
     image = Base64ImageField(max_length=None, use_url=False,)
 
 
-class RecipeSerializer(serializers.ModelSerializer,
+class RecipesSerializer(serializers.ModelSerializer,
                        CommonRecipe):
     """Creating serializer of the recipes model."""
 
@@ -173,13 +167,13 @@ class RecipeSerializer(serializers.ModelSerializer,
     class Meta:
         """Meta-parameter of serializer of the recipes model."""
 
-        model = Recipe
+        model = Recipes
         fields = ('id', 'author', 'name', 'image', 'text',
                   'ingredients', 'tags', 'cooking_time',
                   'is_in_shopping_cart', 'is_favorited')
 
 
-class RecipeSerializerPost(serializers.ModelSerializer,
+class RecipesSerializerPost(serializers.ModelSerializer,
                            CommonRecipe):
     """Creating serializer of the ingredients post model."""
 
@@ -194,7 +188,7 @@ class RecipeSerializerPost(serializers.ModelSerializer,
     class Meta:
         """Meta-parameter of serializer of the ingredients post model."""
 
-        model = Recipe
+        model = Recipes
         fields = ('id', 'author', 'name', 'image', 'text',
                   'ingredients', 'tags', 'cooking_time',
                   'is_in_shopping_cart', 'is_favorited')
@@ -224,16 +218,16 @@ class RecipeSerializerPost(serializers.ModelSerializer,
             recipe.tags.add(tag_data)
             recipe.save()
         for ingredient in ingredients:
-            if not IngredientRecipe.objects.filter(
+            if not IngredientRecipes.objects.filter(
                     ingredient_id=ingredient['ingredient']['id'],
                     recipe=recipe).exists():
-                ingredientrecipe = IngredientRecipe.objects.create(
+                ingredientrecipe = IngredientRecipes.objects.create(
                     ingredient_id=ingredient['ingredient']['id'],
                     recipe=recipe)
                 ingredientrecipe.amount = ingredient['amount']
                 ingredientrecipe.save()
             else:
-                IngredientRecipe.objects.filter(
+                IngredientRecipes.objects.filter(
                     recipe=recipe).delete()
                 recipe.delete()
                 raise serializers.ValidationError(
@@ -249,7 +243,7 @@ class RecipeSerializerPost(serializers.ModelSerializer,
         text = validated_data.get('text')
         cooking_time = validated_data.get('cooking_time')
         ingredients = validated_data.pop('ingredientrecipes')
-        recipe = Recipe.objects.create(
+        recipe = Recipes.objects.create(
             author=author,
             name=name,
             image=image,
@@ -263,8 +257,8 @@ class RecipeSerializerPost(serializers.ModelSerializer,
         """Update recipes."""
         tags_data = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredientrecipes')
-        TagRecipe.objects.filter(recipe=instance).delete()
-        IngredientRecipe.objects.filter(recipe=instance).delete()
+        TagRecipes.objects.filter(recipe=instance).delete()
+        IngredientRecipes.objects.filter(recipe=instance).delete()
         instance = self.add_tags_and_ingredients(
             tags_data, ingredients, instance)
         super().update(instance, validated_data)
@@ -278,7 +272,7 @@ class RecipeMinifieldSerializer(serializers.ModelSerializer):
     class Meta:
         """Meta-parameters of simplified display of the recipes model."""
 
-        model = Recipe
+        model = Recipes
         fields = ('id', 'name', 'cooking_time', 'image')
 
 
@@ -300,8 +294,8 @@ class SubscriptionSerializer(serializers.ModelSerializer,
         request = self.context.get('request')
         if request.GET.get('recipes_limit'):
             recipes_limit = int(request.GET.get('recipes_limit'))
-            queryset = Recipe.objects.filter(author__id=obj.id).order_by('id')[
+            queryset = Recipes.objects.filter(author__id=obj.id).order_by('id')[
                 :recipes_limit]
         else:
-            queryset = Recipe.objects.filter(author__id=obj.id).order_by('id')
+            queryset = Recipes.objects.filter(author__id=obj.id).order_by('id')
         return RecipeMinifieldSerializer(queryset, many=True).data

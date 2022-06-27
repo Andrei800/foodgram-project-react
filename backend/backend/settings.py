@@ -1,5 +1,3 @@
-"""The main settings of the application."""
-
 import os
 
 from dotenv import load_dotenv

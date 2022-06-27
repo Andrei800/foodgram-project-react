@@ -17,18 +17,18 @@ from rest_framework.response import Response
 from recipes.models import Cart
 from recipes.models import Favorite
 from recipes.models import Ingredient
-from recipes.models import IngredientRecipe
-from recipes.models import Recipe
-from recipes.models import Subscribe
+from recipes.models import IngredientRecipes
+from recipes.models import Recipes
+from users.models import Subscription
 from recipes.models import Tag
 from users.models import User
-from api.filters import IngredientSearchFilter
-from api.filters import RecipeFilters
+from api.filters import IngredientFilter
+from api.filters import RecipesFilter
 from api.serializers import CartSerializer
 from api.serializers import FavoriteSerializer
 from api.serializers import IngredientSerializer
-from api.serializers import RecipeSerializer
-from api.serializers import RecipeSerializerPost
+from api.serializers import RecipesSerializer
+from api.serializers import RecipesSerializerPost
 from api.serializers import RegistrationSerializer
 from api.serializers import SubscriptionSerializer
 from api.serializers import TagSerializer
@@ -44,7 +44,7 @@ class CreateUserView(UserViewSet):
         return User.objects.all()
 
 
-class SubscribeViewSet(viewsets.ModelViewSet):
+class SubscriptionViewSet(viewsets.ModelViewSet):
     """Processing the subscriptions model."""
 
     serializer_class = SubscriptionSerializer
@@ -58,7 +58,7 @@ class SubscribeViewSet(viewsets.ModelViewSet):
         """Create subscriptions."""
         user_id = self.kwargs.get('users_id')
         user = get_object_or_404(User, id=user_id)
-        Subscribe.objects.create(
+        Subscription.objects.create(
             user=request.user, following=user)
         return Response(HTTPStatus.CREATED)
 
@@ -67,7 +67,7 @@ class SubscribeViewSet(viewsets.ModelViewSet):
         author_id = self.kwargs['users_id']
         user_id = request.user.id
         subscribe = get_object_or_404(
-            Subscribe, user__id=user_id, following__id=author_id)
+            Subscription, user__id=user_id, following__id=author_id)
         subscribe.delete()
         return Response(HTTPStatus.NO_CONTENT)
 
@@ -80,12 +80,12 @@ class TagViewSet(viewsets.ReadOnlyModelViewSet):
     pagination_class = None
 
 
-class RecipeViewSet(viewsets.ModelViewSet):
+class RecipesViewSet(viewsets.ModelViewSet):
     """Processing the recipes model."""
 
-    queryset = Recipe.objects.all()
+    queryset = Recipes.objects.all()
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    filter_class = RecipeFilters
+    filter_class = RecipesFilter
     filter_backends = [DjangoFilterBackend, ]
 
     def perform_create(self, serializer):
@@ -95,9 +95,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         """Select serializer depend on the request."""
         if self.request.method == 'GET':
-            return RecipeSerializer
+            return RecipesSerializer
         else:
-            return RecipeSerializerPost
+            return RecipesSerializerPost
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
@@ -106,7 +106,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     permission_classes = [permissions.AllowAny]
     serializer_class = IngredientSerializer
-    filter_backends = (DjangoFilterBackend, IngredientSearchFilter)
+    filter_backends = (DjangoFilterBackend, IngredientFilter)
     pagination_class = None
     search_fields = ['^name', ]
 
@@ -119,7 +119,7 @@ class BaseFavoriteCartViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         """Create the favorite recipes and cart model objects."""
         recipe_id = int(self.kwargs['recipes_id'])
-        recipe = get_object_or_404(Recipe, id=recipe_id)
+        recipe = get_object_or_404(Recipes, id=recipe_id)
         self.model.objects.create(
             user=request.user, recipe=recipe)
         return Response(HTTPStatus.CREATED)
@@ -190,7 +190,7 @@ class DownloadCart(viewsets.ModelViewSet):
 
     def download(self, request):
         """Create the shopping list."""
-        result = IngredientRecipe.objects.filter(
+        result = IngredientRecipes.objects.filter(
             recipe__carts__user=request.user).values(
             'ingredient__name', 'ingredient__measurement_unit').order_by(
                 'ingredient__name').annotate(ingredient_total=Sum('amount'))
