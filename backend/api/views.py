@@ -159,8 +159,9 @@ class DownloadCart(viewsets.ModelViewSet):
     def canvas_method(dictionary):
         """Save the shopping list in format pdf."""
         response = HttpResponse(content_type='application/pdf')
-        response['Content-Disposition'] = \
-            'attachment;filename = "shopping_cart.pdf"'
+        response[
+            'Content-Disposition'] = (
+                'attachment;filename = "shopping_cart.pdf"')
         begin_position_x, begin_position_y = 40, 650
         sheet = canvas.Canvas(response, pagesize=A4)
         pdfmetrics.registerFont(TTFont('List',
