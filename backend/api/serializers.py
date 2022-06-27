@@ -246,8 +246,7 @@ class RecipesSerializerPost(serializers.ModelSerializer, CommonRecipe):
             text=text,
             cooking_time=cooking_time,
         )
-        recipe = self.add_tags_and_ingredients(tags_data, ingredients, recipe)
-        return recipe
+        return self.add_tags_and_ingredients(tags_data, ingredients, recipe)
 
     def update(self, instance, validated_data):
         """Update recipes."""
