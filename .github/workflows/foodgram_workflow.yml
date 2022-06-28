@@ -59,7 +59,6 @@ jobs:
             sudo docker-compose stop 
             sudo docker-compose rm backend 
             touch .env
-            echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env 
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env 
             echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env 
             echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env 
