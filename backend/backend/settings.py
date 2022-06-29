@@ -73,7 +73,7 @@ DATABASES = {
         'PASSWORD': os.getenv(
             'POSTGRES_PASSWORD', default='postgres'),
         'HOST': os.getenv(
-            'DB_HOST', default='db'),
+            'DB_HOST', default='localhost'),
         'PORT': os.getenv(
             'DB_PORT', default='5432'),
     }
@@ -141,7 +141,7 @@ DJOSER = {
     }
 }
 
-"""AUTH_USER_MODEL = 'users.User'"""
+AUTH_USER_MODEL = 'users.User'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
