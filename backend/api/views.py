@@ -1,5 +1,3 @@
-"""Creating view-classes of requests processing."""
-
 from http import HTTPStatus
 
 from django.db.models import Sum
@@ -66,9 +64,9 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
         """Delete subscriptions."""
         author_id = self.kwargs['users_id']
         user_id = request.user.id
-        subscribe = get_object_or_404(
+        subscription = get_object_or_404(
             Subscription, user__id=user_id, following__id=author_id)
-        subscribe.delete()
+        subscription.delete()
         return Response(HTTPStatus.NO_CONTENT)
 
 
@@ -118,18 +116,18 @@ class BaseFavoriteCartViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         """Create the favorite recipes and cart model objects."""
-        recipe_id = int(self.kwargs['recipes_id'])
-        recipe = get_object_or_404(Recipes, id=recipe_id)
+        recipes_id = int(self.kwargs['recipes_id'])
+        recipes = get_object_or_404(Recipes, id=recipes_id)
         self.model.objects.create(
-            user=request.user, recipe=recipe)
+            user=request.user, recipes=recipes)
         return Response(HTTPStatus.CREATED)
 
     def delete(self, request, *args, **kwargs):
         """Delete the favorite recipes and cart model objects."""
-        recipe_id = self.kwargs['recipes_id']
+        recipes_id = self.kwargs['recipes_id']
         user_id = request.user.id
         object = get_object_or_404(
-            self.model, user__id=user_id, recipe__id=recipe_id)
+            self.model, user__id=user_id, recipes__id=recipes_id)
         object.delete()
         return Response(HTTPStatus.NO_CONTENT)
 
@@ -191,7 +189,7 @@ class DownloadCart(viewsets.ModelViewSet):
     def download(self, request):
         """Create the shopping list."""
         result = IngredientRecipes.objects.filter(
-            recipe__carts__user=request.user).values(
+            recipes__carts__user=request.user).values(
             'ingredient__name', 'ingredient__measurement_unit').order_by(
                 'ingredient__name').annotate(ingredient_total=Sum('amount'))
         return self.canvas_method(result)

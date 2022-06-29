@@ -5,13 +5,13 @@ from recipes.models import (Cart, Favorite, Ingredient,
                             IngredientRecipes, Recipes, Tag, TagRecipes)
 
 
-class IngredientRecipeInline(admin.TabularInline):
+class IngredientRecipesInline(admin.TabularInline):
 
     model = IngredientRecipes
     extra = 1
 
 
-class TagRecipeInline(admin.TabularInline):
+class TagRecipesInline(admin.TabularInline):
 
     model = TagRecipes
     extra = 1
@@ -59,7 +59,7 @@ class FavoriteAdmin(admin.ModelAdmin):
 
 class RecipesAdmin(admin.ModelAdmin):
 
-    inlines = (IngredientRecipeInline, TagRecipeInline,)
+    inlines = (IngredientRecipesInline, TagRecipesInline,)
     list_display = ('name', 'author', 'cooking_time',
                     'id', 'count_favorite', 'pub_date')
     search_fields = ('name', 'author', 'tags')

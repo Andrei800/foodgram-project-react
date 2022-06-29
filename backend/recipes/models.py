@@ -131,7 +131,7 @@ class TagRecipes(models.Model):
         unique_together = [['recipes', 'tag']]
 
     def __str__(self):
-        return f'{self.recipe} {self.tag}'
+        return f'{self.recipes} {self.tag}'
 
 
 class Cart(models.Model):
@@ -231,7 +231,7 @@ class UserRecipes(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=('user', 'recipes'),
-                name='%(class)s_unique_favorite_user_recipe'
+                name='%(class)s_unique_favorite_user_recipes'
             )
         ]
 

@@ -10,7 +10,7 @@ SECRET_KEY = 'p&l%385148kslhtyn^##a1)ilz@4zqj=rq&agl^##esfghsghsghaertzgl9(vs'
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['51.250.29.91', 'localhost', '127.0.0.1', '[::1]', 'backend']
+ALLOWED_HOSTS = ['*']
 
 
 INSTALLED_APPS = [
@@ -71,11 +71,11 @@ DATABASES = {
         'USER': os.getenv(
             'POSTGRES_USER', default='postgres'),
         'PASSWORD': os.getenv(
-            'POSTGRES_PASSWORD', default='postgres'),
+            'POSTGRES_PASSWORD', default='Flex3365'),
         'HOST': os.getenv(
-            'DB_HOST', default='db'),
+            'DB_HOST' ),
         'PORT': os.getenv(
-            'DB_PORT', default='5432'),
+            'DB_PORT'),
     }
 }
 
