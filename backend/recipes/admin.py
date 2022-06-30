@@ -2,12 +2,12 @@ from django.contrib import admin
 
 from users.models import User, Subscription
 from recipes.models import (Cart, Favorite, Ingredient,
-                            IngredientRecipes, Recipes, Tag, TagRecipes)
+                            IngredientInRecipes, Recipes, Tag, TagRecipes)
 
 
 class IngredientRecipesInline(admin.TabularInline):
 
-    model = IngredientRecipes
+    model = IngredientInRecipes
     extra = 1
 
 

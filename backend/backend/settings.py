@@ -20,14 +20,14 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'django.contrib.staticfiles',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'rest_framework_simplejwt',
-    'djoser',
+    'drf_extra_fields',
     'django_filters',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -129,16 +129,17 @@ REST_FRAMEWORK = {
 }
 
 DJOSER = {
+    'LOGIN_FIELD': 'email',
+    'SERIALIZERS': {
+        'user': 'api.serializers.UserDjoserSerializer',
+        'current_user': 'api.serializers.UserDjoserSerializer',
+        'user_create': 'api.serializers.UserDjoserCreateSerializer',
+    },
     'PERMISSIONS': {
         'user_list': ['rest_framework.permissions.AllowAny'],
         'user': ['rest_framework.permissions.IsAuthenticated'],
     },
-
-    'SERIALIZERS': {
-        'user_create': 'api.serializers.RegistrationSerializer',
-        'user': 'api.serializers.RegistrationSerializer',
-        'current_user': 'api.serializers.RegistrationSerializer',
-    }
+    "HIDE_USERS": False,
 }
 
 AUTH_USER_MODEL = 'users.User'
@@ -155,4 +156,4 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

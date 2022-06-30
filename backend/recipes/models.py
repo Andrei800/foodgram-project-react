@@ -70,7 +70,7 @@ class Recipes(models.Model):
     )
     ingredients = models.ManyToManyField(
         Ingredient,
-        through='IngredientRecipes',
+        through='IngredientInRecipes',
         verbose_name='Список ингредиентов',
         related_name='recipes',
         help_text='Выберите продукты рецепта'
@@ -182,7 +182,7 @@ class RecipesQuerySet(models.QuerySet):
         )
 
 
-class IngredientRecipes(models.Model):
+class IngredientInRecipes(models.Model):
     recipes = models.ForeignKey(
         Recipes,
         on_delete=models.CASCADE,

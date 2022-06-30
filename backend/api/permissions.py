@@ -1,12 +1,29 @@
 from rest_framework import permissions
 
 
-class IsAdmin(permissions.BasePermission):
-    """Creating permissions of administrator."""
+class IsAuthenticatedOwnerOrAdminOnly(permissions.BasePermission):
+    message = "Access to edit only for owner or admin!"
 
     def has_permission(self, request, view):
-        """Enable permission of users."""
-        if request.user.is_authenticated and request.user.is_admin:
-            return True
-        else:
-            return False
+        return (
+            request.method in permissions.SAFE_METHODS
+            or request.user.is_authenticated
+            or request.user.is_superuser)
+
+    def has_object_permission(self, request, view, obj):
+        return (
+            request.method in permissions.SAFE_METHODS
+            or obj.author == request.user
+            or request.user.is_superuser)
+
+
+class IsAdminOrReadOnly(permissions.BasePermission):
+    message = "Access only for admin!"
+
+    def has_permission(self, request, view):
+        return (request.method in permissions.SAFE_METHODS
+                or request.user.is_superuser)
+
+    def has_object_permission(self, request, view, obj):
+        return (request.method in permissions.SAFE_METHODS
+                or request.user.is_superuser)
