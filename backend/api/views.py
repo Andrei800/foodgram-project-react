@@ -15,13 +15,14 @@ from recipes.models import (Favorite, Ingredient,
 from users.models import Subscription, User
 
 from api.filters import IngredientFilter, RecipesFilter
-from api.mixins import ListCreateRetrieveUpdateDestroyViewSet, ListRetrieveViewSet
+from api.mixins import (ListCreateRetrieveUpdateDestroyViewSet,
+                        ListRetrieveViewSet)
 from api.pagination import CustomPagination
 from api.permissions import IsAdminOrReadOnly
 from api.serializers import (IngredientSerializer, RecipesMinifiedSerializer,
-                          RecipesReadSerializer, RecipesSerializer,
-                          SubscriptionSerializer, TagSerializer,
-                          UserDjoserSerializer)
+                             RecipesReadSerializer, RecipesSerializer,
+                             SubscriptionSerializer, TagSerializer,
+                             UserDjoserSerializer)
 
 
 class UserViewSet(UserViewSet):
