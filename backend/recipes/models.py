@@ -43,7 +43,7 @@ class Tag(models.Model):
         max_length=200,
         unique=True,
         null=True,
-        verbose_name="Уникальный слаг",
+        verbose_name='Уникальный слаг',
     )
 
     class Meta:

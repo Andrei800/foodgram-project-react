@@ -63,7 +63,7 @@ class UserDjoserCreateSerializer(UserCreateSerializer):
 
 
 class UserDjoserSerializer(UserSerializer):
-    is_subscribed = serializers.SerializerMethodField()
+    subscribed = serializers.SerializerMethodField(method_name='is_subscribed')
 
     class Meta:
         model = User
@@ -73,7 +73,7 @@ class UserDjoserSerializer(UserSerializer):
             'is_subscribed'
         )
 
-    def get_is_subscribed(self, obj):
+    def is_subscribed(self, obj):
         user = self.context['request'].user
         return (
             user.is_authenticated
@@ -82,8 +82,12 @@ class UserDjoserSerializer(UserSerializer):
 
 
 class SubscriptionSerializer(UserDjoserSerializer):
-    recipes = serializers.SerializerMethodField(read_only=True)
-    recipes_count = serializers.SerializerMethodField(read_only=True)
+    recipes = serializers.SerializerMethodField(
+        method_name='get_recipes'
+    )
+    recipes_count = serializers.SerializerMethodField(
+        method_name='get_recipes_count'
+    )
 
     class Meta:
         model = User
@@ -175,7 +179,7 @@ class RecipesSerializer(WritableNestedModelSerializer):
             ingredient_id_list.append(ingredient['ingredient']['id'])
         if len(ingredient_id_list) != len(set(ingredient_id_list)):
             raise serializers.ValidationError(
-                'Данныйы ингредиент есть в рецепте!'
+                'Данный ингредиент есть в рецепте!'
             )
         return value
 

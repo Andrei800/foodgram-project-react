@@ -3,7 +3,7 @@ from django.db import models
 
 
 class User(AbstractUser):
-    ROLES = (("user", "USER"), ("admin", "ADMIN"))
+    ROLES = (('user', 'USER'), ('admin', 'ADMIN'))
 
     email = models.EmailField(max_length=254, unique=True, blank=False)
     first_name = models.CharField(max_length=150, blank=False)
@@ -17,7 +17,7 @@ class User(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.is_superuser or self.role == "admin"
+        return self.is_superuser or self.role == 'admin'
 
     def __str__(self):
         return self.username

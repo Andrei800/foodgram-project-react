@@ -13,4 +13,4 @@ class SubscriptionAdmin(admin.ModelAdmin):
     pass
 
 
-empty_value_display = "-пусто-"
+empty_value_display = '-пусто-'
