@@ -26,7 +26,7 @@ from api.serializers import (IngredientSerializer, RecipesMinifiedSerializer,
 
 
 class UserViewSet(UserViewSet):
-    http_method_names = ['get', 'post', 'delete']
+    http_method_names = ('get', 'post', 'delete')
     pagination_class = CustomPagination
 
     @action(
@@ -44,7 +44,7 @@ class UserViewSet(UserViewSet):
 
     @action(
         detail=True,
-        methods=['post', 'delete'],
+        methods=('post', 'delete'),
         permission_classes=[IsAuthenticated]
     )
     def subscribe(self, request, id):
@@ -99,7 +99,7 @@ class TagViewSet(ListRetrieveViewSet):
 class RecipesViewSet(ListCreateRetrieveUpdateDestroyViewSet):
     queryset = Recipes.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
-    http_method_names = ['get', 'post', 'patch', 'delete']
+    http_method_names = ('get', 'post', 'patch', 'delete')
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend]
     filter_class = RecipesFilter

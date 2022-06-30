@@ -18,7 +18,7 @@ class Ingredient(models.Model):
     )
 
     class Meta:
-        ordering = ['name']
+        ordering = ('name')
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
 
@@ -47,7 +47,7 @@ class Tag(models.Model):
     )
 
     class Meta:
-        ordering = ['name']
+        ordering = ('name')
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
@@ -102,7 +102,7 @@ class Recipes(models.Model):
     )
 
     class Meta:
-        ordering = ['-pub_date']
+        ordering = ('-pub_date')
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
@@ -123,7 +123,7 @@ class TagRecipes(models.Model):
     )
 
     class Meta:
-        unique_together = [['recipes', 'tag']]
+        unique_together = (['recipes', 'tag'])
 
     def __str__(self):
         return f'{self.recipes} {self.tag}'
@@ -192,7 +192,7 @@ class IngredientInRecipes(models.Model):
     )
 
     class Meta:
-        unique_together = [['recipes', 'ingredient']]
+        unique_together = (['recipes', 'ingredient'])
 
     def __str__(self):
         return f'{self.recipes} {self.ingredient}'

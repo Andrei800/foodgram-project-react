@@ -20,7 +20,7 @@ class TagSerializer(serializers.ModelSerializer):
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'measurement_unit', )
+        fields = ('id', 'name', 'measurement_unit')
 
 
 class IngredientInRecipesSerializer(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class IngredientInRecipesSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'measurement_unit',
-            'amount',
+            'amount'
         )
 
 
@@ -44,7 +44,7 @@ class UserDjoserCreateSerializer(UserCreateSerializer):
         model = User
         fields = (
             'email', 'id', 'username', 'first_name',
-            'last_name', 'password',
+            'last_name', 'password'
         )
         extra_kwargs = {'password': {'write_only': True}}
 
@@ -70,7 +70,7 @@ class UserDjoserSerializer(UserSerializer):
         fields = (
             'email', 'id', 'username', 'first_name',
             'last_name',
-            'is_subscribed',
+            'is_subscribed'
         )
 
     def get_is_subscribed(self, obj):
@@ -91,7 +91,7 @@ class SubscriptionSerializer(UserDjoserSerializer):
         fields = (
             'email', 'id', 'username', 'first_name',
             'last_name', 'is_subscribed',
-            'recipes', 'recipes_count',
+            'recipes', 'recipes_count'
         )
 
     def get_recipes(self, obj):
@@ -123,7 +123,7 @@ class RecipesReadSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'tags', 'author', 'ingredients', 'is_favorited',
             'is_in_shopping_cart', 'name', 'image',
-            'text', 'cooking_time',
+            'text', 'cooking_time'
         )
 
 
@@ -162,7 +162,7 @@ class RecipesSerializer(WritableNestedModelSerializer):
             'name',
             'image',
             'text',
-            'cooking_time',
+            'cooking_time'
         )
 
     def validate(self, attrs):
