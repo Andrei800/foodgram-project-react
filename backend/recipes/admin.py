@@ -73,8 +73,8 @@ class RecipesAdmin(admin.ModelAdmin):
 
 class SubscriptionAdmin(admin.ModelAdmin):
 
-    list_display = ('user', 'following')
-    search_fields = ('user', )
+    list_display = ('user', 'following',)
+    search_fields = ('user',)
     empty_value_display = '-пусто-'
     list_filter = ('user',)
 

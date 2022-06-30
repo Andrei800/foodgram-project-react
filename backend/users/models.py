@@ -1,23 +1,27 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db import models
 
+USER = 'user'
+ADMIN = 'admin'
 
 class User(AbstractUser):
-    ROLES = (('user', 'USER'), ('admin', 'ADMIN'))
-
-    email = models.EmailField(max_length=254, unique=True, blank=False)
-    first_name = models.CharField(max_length=150, blank=False)
-    last_name = models.CharField(max_length=150, blank=False)
-    role = models.CharField(max_length=300, choices=ROLES, default=ROLES[0][0])
+    username = models.CharField(verbose_name='Имя пользователя',
+                               unique=True, max_length=150)
+    email = models.EmailField(max_length=254, unique=True, blank=False,
+                              verbose_name='Адрес электронной почты',)
+    first_name = models.CharField(max_length=150, blank=False,
+                                  verbose_name='Имя')
+    last_name = models.CharField(max_length=150, blank=False,
+                                 verbose_name='Фамилия',)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username', ]
+    REQUIRED_FIELDS = ('username', 'first_name', 'last_name',)
 
     objects = UserManager()
 
     @property
     def is_admin(self):
-        return self.is_superuser or self.role == 'admin'
+        return self.is_superuser or self.role == ADMIN
 
     def __str__(self):
         return self.username
@@ -41,7 +45,7 @@ class Subscription(models.Model):
     )
 
     class Meta:
-
+        ordering = ('following',)
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         constraints = [

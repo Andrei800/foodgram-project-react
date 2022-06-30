@@ -1,6 +1,5 @@
 from django.core.validators import MinValueValidator
 from django.db import models
-from django.db.models import Exists, OuterRef
 from users.models import User
 
 
@@ -18,7 +17,7 @@ class Ingredient(models.Model):
     )
 
     class Meta:
-        ordering = ('name')
+        ordering = ('name',)
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
 
@@ -47,7 +46,7 @@ class Tag(models.Model):
     )
 
     class Meta:
-        ordering = ('name')
+        ordering = ('id',)
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
@@ -102,7 +101,7 @@ class Recipes(models.Model):
     )
 
     class Meta:
-        ordering = ('-pub_date')
+        ordering = ('-pub_date',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
@@ -123,7 +122,10 @@ class TagRecipes(models.Model):
     )
 
     class Meta:
-        unique_together = (['recipes', 'tag'])
+        constraints = [
+            models.UniqueConstraint(fields=['recipes', 'tag'],
+                                    name='tag_recipes')
+        ]
 
     def __str__(self):
         return f'{self.recipes} {self.tag}'
@@ -158,22 +160,6 @@ class Cart(models.Model):
         return f'{self.user} {self.recipes}'
 
 
-class RecipesQuerySet(models.QuerySet):
-    def add_user_annotations(self, user_id):
-        return self.annotate(
-            is_favorited=Exists(
-                Favorite.objects.filter(
-                    user_id=user_id, recipes__pk=OuterRef('pk')
-                )
-            ),
-            is_in_shopping_cart=Exists(
-                ShoppingCart.objects.filter(
-                    user_id=user_id, recipes__pk=OuterRef('pk')
-                )
-            ),
-        )
-
-
 class IngredientInRecipes(models.Model):
     recipes = models.ForeignKey(
         Recipes,
@@ -192,7 +178,10 @@ class IngredientInRecipes(models.Model):
     )
 
     class Meta:
-        unique_together = (['recipes', 'ingredient'])
+        constraints = [
+            models.UniqueConstraint(fields=['recipes', 'ingredient'],
+                                    name='ingredient_in_recipes')
+        ]
 
     def __str__(self):
         return f'{self.recipes} {self.ingredient}'
@@ -218,11 +207,11 @@ class UserRecipes(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['-created']
+        ordering = ('-created',)
 
         constraints = [
             models.UniqueConstraint(
-                fields=('user', 'recipes'),
+                fields=('user', 'recipes',),
                 name='%(class)s_unique_favorite_user_recipes'
             )
         ]

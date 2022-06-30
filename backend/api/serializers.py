@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
@@ -13,14 +14,14 @@ from users.models import Subscription, User
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'color', 'slug')
-        read_only_fields = ('name', 'color', 'slug')
+        fields = ('id', 'name', 'color', 'slug',)
+        read_only_fields = ('name', 'color', 'slug',)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'measurement_unit')
+        fields = ('id', 'name', 'measurement_unit',)
 
 
 class IngredientInRecipesSerializer(serializers.ModelSerializer):
@@ -35,7 +36,7 @@ class IngredientInRecipesSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'measurement_unit',
-            'amount'
+            'amount',
         )
 
 
@@ -44,7 +45,7 @@ class UserDjoserCreateSerializer(UserCreateSerializer):
         model = User
         fields = (
             'email', 'id', 'username', 'first_name',
-            'last_name', 'password'
+            'last_name', 'password',
         )
         extra_kwargs = {'password': {'write_only': True}}
 
@@ -70,7 +71,7 @@ class UserDjoserSerializer(UserSerializer):
         fields = (
             'email', 'id', 'username', 'first_name',
             'last_name',
-            'is_subscribed'
+            'is_subscribed',
         )
 
     def is_subscribed(self, obj):
@@ -95,7 +96,7 @@ class SubscriptionSerializer(UserDjoserSerializer):
         fields = (
             'email', 'id', 'username', 'first_name',
             'last_name', 'is_subscribed',
-            'recipes', 'recipes_count'
+            'recipes', 'recipes_count',
         )
 
     def get_recipes(self, obj):
@@ -110,7 +111,7 @@ class SubscriptionSerializer(UserDjoserSerializer):
         ).data
 
     def get_recipes_count(self, obj):
-        return Recipes.objects.filter(author=obj).count()
+        return  obj.recipes.count()
 
 
 class RecipesReadSerializer(serializers.ModelSerializer):
@@ -127,7 +128,7 @@ class RecipesReadSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'tags', 'author', 'ingredients', 'is_favorited',
             'is_in_shopping_cart', 'name', 'image',
-            'text', 'cooking_time'
+            'text', 'cooking_time',
         )
 
 
@@ -139,11 +140,11 @@ class TagRecipesSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TagRecipes
-        fields = ('id', 'name', 'color', 'slug')
+        fields = ('id', 'name', 'color', 'slug',)
         validators = [
             UniqueTogetherValidator(
                 queryset=TagRecipes.objects.all(),
-                fields=('recipe', 'tag'),
+                fields=('recipe', 'tag',),
                 message='Данный тег уже указан!',
             ),
         ]
@@ -166,7 +167,7 @@ class RecipesSerializer(WritableNestedModelSerializer):
             'name',
             'image',
             'text',
-            'cooking_time'
+            'cooking_time',
         )
 
     def validate(self, attrs):
@@ -195,7 +196,7 @@ class RecipesSerializer(WritableNestedModelSerializer):
                 ),
                 amount=ingredient_data['amount']
             )
-
+    @transaction.non_atomic_requests
     def create(self, validated_data):
         ingredients_data = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
@@ -211,6 +212,7 @@ class RecipesSerializer(WritableNestedModelSerializer):
             context={'request': self.context.get('request')}
         ).data
 
+    @transaction.non_atomic_requests
     def update(self, instance, validated_data):
         ingredients_data = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
@@ -225,13 +227,13 @@ class RecipesSerializer(WritableNestedModelSerializer):
 class RecipesMinifiedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipes
-        fields = ('id', 'name', 'image', 'cooking_time')
+        fields = ('id', 'name', 'image', 'cooking_time',)
 
 
 class SubscriptionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
-        fields = '__all__'
+        fields = ('user', 'following',)
 
         validators = [
             UniqueTogetherValidator(

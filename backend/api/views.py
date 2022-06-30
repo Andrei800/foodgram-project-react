@@ -14,6 +14,7 @@ from recipes.models import (Favorite, Ingredient,
                             ShoppingCart, Tag)
 from users.models import Subscription, User
 
+from backend.settings import SHOP_LIST
 from api.filters import IngredientFilter, RecipesFilter
 from api.mixins import (ListCreateRetrieveUpdateDestroyViewSet,
                         ListRetrieveViewSet)
@@ -24,6 +25,7 @@ from api.serializers import (IngredientSerializer, RecipesMinifiedSerializer,
                              SubscriptionSerializer, TagSerializer,
                              UserDjoserSerializer)
 
+CONTENT_TYPE='text/plain'
 
 class UserViewSet(UserViewSet):
     http_method_names = ('get', 'post', 'delete')
@@ -34,17 +36,14 @@ class UserViewSet(UserViewSet):
         permission_classes=[IsAuthenticated]
     )
     def subscriptions(self, request):
-        queryset = User.objects.filter(
-            subscribed_to__user=request.user).order_by('subscribed_to')
-        page = self.paginate_queryset(queryset)
         serializer = SubscriptionSerializer(
-            page, many=True, context={'request': request}
+            many=True, context={'request': request}
         )
         return self.get_paginated_response(serializer.data)
 
     @action(
         detail=True,
-        methods=('post', 'delete'),
+        methods=('post', 'delete',),
         permission_classes=[IsAuthenticated]
     )
     def subscribe(self, request, id):
@@ -79,17 +78,15 @@ class UserViewSet(UserViewSet):
 
 
 class IngredientViewSet(ListRetrieveViewSet):
-    queryset = Ingredient.objects.all().order_by(F('name'))
     serializer_class = IngredientSerializer
     filter_backends = (IngredientFilter, )
-    http_method_names = ['get', ]
+    http_method_names = ('get',)
     lookup_fields = ['id', ]
     search_fields = ('^name', )
     permission_classes = [IsAdminOrReadOnly]
 
 
 class TagViewSet(ListRetrieveViewSet):
-    queryset = Tag.objects.all().order_by(F('id'))
     serializer_class = TagSerializer
     http_method_names = ['get', ]
     lookup_fields = ['id']
@@ -97,9 +94,8 @@ class TagViewSet(ListRetrieveViewSet):
 
 
 class RecipesViewSet(ListCreateRetrieveUpdateDestroyViewSet):
-    queryset = Recipes.objects.all()
     permission_classes = [IsAuthenticatedOrReadOnly]
-    http_method_names = ('get', 'post', 'patch', 'delete')
+    http_method_names = ('get', 'post', 'patch', 'delete',)
     pagination_class = CustomPagination
     filter_backends = [DjangoFilterBackend]
     filter_class = RecipesFilter
@@ -117,10 +113,8 @@ class RecipesViewSet(ListCreateRetrieveUpdateDestroyViewSet):
         permission_classes=[IsAuthenticated]
     )
     def download_shopping_cart(self, request):
-        response = HttpResponse(content_type='text/plain')
-        response[
-            'Content-Disposition'
-        ] = 'attachment; filename=shopping_list.txt'
+        response = HttpResponse(CONTENT_TYPE)
+        response['Content-Disposition'] = 'attachment;', SHOP_LIST
 
         user = request.user
         ingredients = IngredientInRecipes.objects.filter(
