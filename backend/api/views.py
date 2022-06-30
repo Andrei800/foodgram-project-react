@@ -1,4 +1,4 @@
-from django.db.models import F, Sum
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -9,9 +9,8 @@ from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
-from recipes.models import (Favorite, Ingredient,
-                            IngredientInRecipes, Recipes,
-                            ShoppingCart, Tag)
+from recipes.models import (Favorite, IngredientInRecipes, Recipes,
+                            ShoppingCart,)
 from users.models import Subscription, User
 
 from backend.settings import SHOP_LIST
@@ -25,7 +24,8 @@ from api.serializers import (IngredientSerializer, RecipesMinifiedSerializer,
                              SubscriptionSerializer, TagSerializer,
                              UserDjoserSerializer)
 
-CONTENT_TYPE='text/plain'
+CONTENT_TYPE = 'text/plain'
+
 
 class UserViewSet(UserViewSet):
     http_method_names = ('get', 'post', 'delete')
@@ -170,4 +170,4 @@ class RecipesViewSet(ListCreateRetrieveUpdateDestroyViewSet):
     def favorite(self, request, pk):
         recipes = get_object_or_404(Recipes, pk=pk)
         return self.post_or_delete_object(
-            model=Favorite, recipe=recipes, request=request)
+            model=Favorite, recipes=recipes, request=request)

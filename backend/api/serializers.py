@@ -111,7 +111,7 @@ class SubscriptionSerializer(UserDjoserSerializer):
         ).data
 
     def get_recipes_count(self, obj):
-        return  obj.recipes.count()
+        return obj.recipes.count()
 
 
 class RecipesReadSerializer(serializers.ModelSerializer):
@@ -196,6 +196,7 @@ class RecipesSerializer(WritableNestedModelSerializer):
                 ),
                 amount=ingredient_data['amount']
             )
+
     @transaction.non_atomic_requests
     def create(self, validated_data):
         ingredients_data = validated_data.pop('ingredients')
