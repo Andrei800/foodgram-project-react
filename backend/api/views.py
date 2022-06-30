@@ -14,11 +14,11 @@ from recipes.models import (Favorite, Ingredient,
                             ShoppingCart, Tag)
 from users.models import Subscription, User
 
-from .filters import IngredientFilter, RecipesFilter
-from .mixins import ListCreateRetrieveUpdateDestroyViewSet, ListRetrieveViewSet
-from .pagination import CustomPagination
-from .permissions import IsAdminOrReadOnly
-from .serializers import (IngredientSerializer, RecipesMinifiedSerializer,
+from api.filters import IngredientFilter, RecipesFilter
+from api.mixins import ListCreateRetrieveUpdateDestroyViewSet, ListRetrieveViewSet
+from api.pagination import CustomPagination
+from api.permissions import IsAdminOrReadOnly
+from api.serializers import (IngredientSerializer, RecipesMinifiedSerializer,
                           RecipesReadSerializer, RecipesSerializer,
                           SubscriptionSerializer, TagSerializer,
                           UserDjoserSerializer)
@@ -55,7 +55,7 @@ class UserViewSet(UserViewSet):
         if request.method == 'POST':
             if subscription:
                 return Response(
-                    {'errors': 'Вы уже подписаны на данного автора'},
+                    {'errors': 'Вы уже подписаны на этого автора'},
                     status=status.HTTP_400_BAD_REQUEST)
             elif user == author:
                 return Response(
@@ -146,7 +146,7 @@ class RecipesViewSet(ListCreateRetrieveUpdateDestroyViewSet):
         if request.method == 'POST':
             if current_model.exists():
                 return Response(
-                    {'errors': 'Ошибка добавления. Уже есть в списке'},
+                    {'errors': 'Ошибка. Уже есть в списке'},
                     status=status.HTTP_400_BAD_REQUEST
                 )
             model.objects.create(user=request.user, recipes=recipes)

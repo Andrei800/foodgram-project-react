@@ -9,12 +9,12 @@ class Ingredient(models.Model):
         max_length=200,
         db_index=True,
         verbose_name='Название ингредиента',
-        help_text='Укажите название игредиента. Например: Капуста',
+        help_text='Укажите название игредиента',
     )
     measurement_unit = models.CharField(
         max_length=200,
         verbose_name='Единицы измерения',
-        help_text='Единицы измерения. Например: кг',
+        help_text='Единицы измерения',
     )
 
     class Meta:
@@ -31,7 +31,7 @@ class Tag(models.Model):
         max_length=200,
         unique=True,
         verbose_name='Название',
-        help_text='Укажите название тега. Например, "Завтрак", "Обед"',
+        help_text='Укажите название тега',
     )
     color = models.CharField(
         max_length=7,
@@ -44,11 +44,6 @@ class Tag(models.Model):
         unique=True,
         null=True,
         verbose_name="Уникальный слаг",
-        help_text=(
-            "Укажите уникальный фрагмент URL-адреса "
-            "для тега. Используйте только латиницу, "
-            "цифры, дефисы и знаки подчёркивания."
-        ),
     )
 
     class Meta:
@@ -135,7 +130,6 @@ class TagRecipes(models.Model):
 
 
 class Cart(models.Model):
-    """Creating the carts model."""
 
     user = models.ForeignKey(
         User,
@@ -152,7 +146,6 @@ class Cart(models.Model):
     )
 
     class Meta:
-        """Meta-parametrs of the model."""
 
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзины'
@@ -162,7 +155,6 @@ class Cart(models.Model):
         ]
 
     def __str__(self):
-        """Represent the model by a string."""
         return f'{self.user} {self.recipes}'
 
 

@@ -24,14 +24,13 @@ class User(AbstractUser):
 
 
 class Subscription(models.Model):
-    """Creating the followers model."""
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='follower',
         verbose_name='Пользователь',
-        help_text='Выберите пользователя, который подписывается'
+        help_text='Выберите пользователя'
     )
     following = models.ForeignKey(
         User,
@@ -42,7 +41,6 @@ class Subscription(models.Model):
     )
 
     class Meta:
-        """Meta-parametrs of the model."""
 
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
@@ -52,5 +50,4 @@ class Subscription(models.Model):
         ]
 
     def __str__(self):
-        """Represent the model by a string."""
         return f'{self.user} {self.following}'

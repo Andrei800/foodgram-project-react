@@ -140,7 +140,7 @@ class TagRecipesSerializer(serializers.ModelSerializer):
             UniqueTogetherValidator(
                 queryset=TagRecipes.objects.all(),
                 fields=('recipe', 'tag'),
-                message='Данный тег уже указан в рецепте!',
+                message='Данный тег уже указан!',
             ),
         ]
 
@@ -175,7 +175,7 @@ class RecipesSerializer(WritableNestedModelSerializer):
             ingredient_id_list.append(ingredient['ingredient']['id'])
         if len(ingredient_id_list) != len(set(ingredient_id_list)):
             raise serializers.ValidationError(
-                'Ингредиент уже есть в рецепте!'
+                'Данныйы ингредиент есть в рецепте!'
             )
         return value
 
@@ -233,7 +233,7 @@ class SubscriptionCreateSerializer(serializers.ModelSerializer):
             UniqueTogetherValidator(
                 queryset=Subscription.objects.all(),
                 fields=('user', 'author'),
-                message='Вы уже подписаны на данного автора!',
+                message='Вы уже подписаны на этого автора!',
             ),
         ]
 
