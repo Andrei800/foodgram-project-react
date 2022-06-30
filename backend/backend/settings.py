@@ -73,7 +73,7 @@ DATABASES = {
         'PASSWORD': os.getenv(
             'POSTGRES_PASSWORD', default='Flex3365'),
         'HOST': os.getenv(
-            'DB_HOST', default='db'),
+            'DB_HOST'),
         'PORT': os.getenv(
             'DB_PORT', default='5432'),
     }

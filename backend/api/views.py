@@ -10,8 +10,8 @@ from rest_framework.permissions import (IsAuthenticated,
 from rest_framework.response import Response
 
 from recipes.models import (Favorite, Ingredient,
-                             IngredientInRecipes, Recipes,
-                             ShoppingCart, Tag)
+                            IngredientInRecipes, Recipes,
+                            ShoppingCart, Tag)
 from users.models import Subscription, User
 
 from .filters import IngredientFilter, RecipesFilter
