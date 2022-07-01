@@ -90,7 +90,7 @@ class Recipes(models.Model):
         verbose_name='Описание рецепта'
     )
     cooking_time = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1)],
+        validators=(MinValueValidator(1),),
         help_text='Время приготовления (в минутах)',
         verbose_name='Время приготовления (в минутах)',
     )
@@ -122,10 +122,10 @@ class TagRecipes(models.Model):
     )
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['recipes', 'tag'],
-                                    name='tag_recipes')
-        ]
+        constraints = (
+            models.UniqueConstraint(fields=('recipes', 'tag',),
+                                    name='tag_recipes'),
+        )
 
     def __str__(self):
         return f'{self.recipes} {self.tag}'
@@ -151,10 +151,10 @@ class Cart(models.Model):
 
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзины'
-        constraints = [
-            models.UniqueConstraint(fields=['user', 'recipes'],
-                                    name='unique_cart')
-        ]
+        constraints = (
+            models.UniqueConstraint(fields=('user', 'recipes',),
+                                    name='unique_cart'),
+        )
 
     def __str__(self):
         return f'{self.user} {self.recipes}'
@@ -172,16 +172,16 @@ class IngredientInRecipes(models.Model):
         related_name='ingredient_recipes'
     )
     amount = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1)],
+        validators=(MinValueValidator(1),),
         help_text='Минимальное количество 1',
         verbose_name='Количество в рецепте',
     )
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['recipes', 'ingredient'],
-                                    name='ingredient_in_recipes')
-        ]
+        constraints = (
+            models.UniqueConstraint(fields=('recipes', 'ingredient',),
+                                    name='ingredient_in_recipes'),
+        )
 
     def __str__(self):
         return f'{self.recipes} {self.ingredient}'
@@ -209,12 +209,12 @@ class UserRecipes(models.Model):
         abstract = True
         ordering = ('-created',)
 
-        constraints = [
+        constraints = (
             models.UniqueConstraint(
                 fields=('user', 'recipes',),
-                name='%(class)s_unique_favorite_user_recipes'
-            )
-        ]
+                name='%(class)s_unique_favorite_user_recipes',
+            ),
+        )
 
     def __str__(self):
         return f'Пользователь: {self.user}, рецепт {self.recipes}'

@@ -101,7 +101,7 @@ class SubscriptionSerializer(UserDjoserSerializer):
 
     def get_recipes(self, obj):
         request = self.context.get('request')
-        limit = request.GET.get("recipes_limit", None)
+        limit = request.GET.get('recipes_limit', None)
         if limit is not None:
             recipes = Recipes.objects.filter(author=obj)[:int(limit)]
         else:
@@ -197,7 +197,7 @@ class RecipesSerializer(WritableNestedModelSerializer):
                 amount=ingredient_data['amount']
             )
 
-    @transaction.non_atomic_requests
+    @transaction.atomic
     def create(self, validated_data):
         ingredients_data = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
@@ -213,7 +213,7 @@ class RecipesSerializer(WritableNestedModelSerializer):
             context={'request': self.context.get('request')}
         ).data
 
-    @transaction.non_atomic_requests
+    @transaction.atomic
     def update(self, instance, validated_data):
         ingredients_data = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
@@ -236,13 +236,13 @@ class SubscriptionCreateSerializer(serializers.ModelSerializer):
         model = Subscription
         fields = ('user', 'following',)
 
-        validators = [
+        validators = (
             UniqueTogetherValidator(
                 queryset=Subscription.objects.all(),
                 fields=('user', 'author'),
                 message='Вы уже подписаны на этого автора!',
             ),
-        ]
+        )
 
     def validate_author(self, value):
         if value == self.context['request'].user:

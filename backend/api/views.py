@@ -33,7 +33,7 @@ class UserViewSet(UserViewSet):
 
     @action(
         detail=False,
-        permission_classes=[IsAuthenticated]
+        permission_classes=(IsAuthenticated,)
     )
     def subscriptions(self, request):
         serializer = SubscriptionSerializer(
@@ -44,7 +44,7 @@ class UserViewSet(UserViewSet):
     @action(
         detail=True,
         methods=('post', 'delete',),
-        permission_classes=[IsAuthenticated]
+        permission_classes=(IsAuthenticated,)
     )
     def subscribe(self, request, id):
         user = request.user
@@ -81,23 +81,23 @@ class IngredientViewSet(ListRetrieveViewSet):
     serializer_class = IngredientSerializer
     filter_backends = (IngredientFilter, )
     http_method_names = ('get',)
-    lookup_fields = ['id', ]
+    lookup_fields = ('id',)
     search_fields = ('^name', )
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class TagViewSet(ListRetrieveViewSet):
     serializer_class = TagSerializer
-    http_method_names = ['get', ]
-    lookup_fields = ['id']
-    permission_classes = [IsAdminOrReadOnly]
+    http_method_names = ('get',)
+    lookup_fields = ('id')
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class RecipesViewSet(ListCreateRetrieveUpdateDestroyViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     http_method_names = ('get', 'post', 'patch', 'delete',)
     pagination_class = CustomPagination
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = (DjangoFilterBackend,)
     filter_class = RecipesFilter
 
     def get_queryset(self):
@@ -110,7 +110,7 @@ class RecipesViewSet(ListCreateRetrieveUpdateDestroyViewSet):
 
     @action(
         detail=False,
-        permission_classes=[IsAuthenticated]
+        permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
         response = HttpResponse(CONTENT_TYPE)
@@ -126,9 +126,9 @@ class RecipesViewSet(ListCreateRetrieveUpdateDestroyViewSet):
         )
         lines = []
         for ingredient in ingredients:
-            name = ingredient['ingredient__name']
-            amount = ingredient['total_amount']
-            unit = ingredient['ingredient__measurement_unit']
+            name = ingredient('ingredient__name',)
+            amount = ingredient('total_amount')
+            unit = ingredient('ingredient__measurement_unit',)
             lines += f'{name}: {amount} {unit}\n'
         response.writelines(lines)
         return response
@@ -154,8 +154,8 @@ class RecipesViewSet(ListCreateRetrieveUpdateDestroyViewSet):
 
     @action(
         detail=True,
-        permission_classes=[IsAuthenticated],
-        methods=['POST', 'DELETE']
+        permission_classes=(IsAuthenticated,),
+        methods=('POST', 'DELETE',)
     )
     def shopping_cart(self, request, pk):
         recipes = get_object_or_404(Recipes, pk=pk)
@@ -164,8 +164,8 @@ class RecipesViewSet(ListCreateRetrieveUpdateDestroyViewSet):
 
     @action(
         detail=True,
-        permission_classes=[IsAuthenticated],
-        methods=['POST', 'DELETE']
+        permission_classes=(IsAuthenticated,),
+        methods=('POST', 'DELETE',)
     )
     def favorite(self, request, pk):
         recipes = get_object_or_404(Recipes, pk=pk)

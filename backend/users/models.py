@@ -49,10 +49,10 @@ class Subscription(models.Model):
         ordering = ('following',)
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
-        constraints = [
+        constraints = (
             models.UniqueConstraint(fields=('user', 'following'),
-                                    name='unique_subscription')
-        ]
+                                    name='unique_subscription'),
+        )
 
     def __str__(self):
         return f'{self.user} {self.following}'
