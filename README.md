@@ -26,33 +26,96 @@ git clone https://github.com/Andrei800/foodgram-project-react
 ## Для работы с удаленным сервером:
 * Выполните вход на свой удаленный сервер
 
-* Установите docker на сервер:
-```
+##### Установите docker на сервер:
+Введите команду:
+```bash
 sudo apt install docker.io 
 ```
-* запустить сборку контейнеров:
+
+##### Установите docker-compose на сервер:
+Введите команды:
+```bash
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 ```
-docker-compose up
+
+##### Локально отредактируйте файл nginx.conf
+Локально отредактируйте файл `infra/nginx.conf` и в строке `server_name` впишите свой IP.
+
+##### Скопируйте подготовленные файлы из каталога infra:
+Скопируйте подготовленные файлы `infra/docker-compose.yml` и `infra/nginx.conf` из вашего проекта на сервер в `home/<ваш_username>/docker-compose.yml` и `home/<ваш_username>/nginx.conf` соответственно.
+Введите команду из корневой папки проекта:
+```bash
+scp docker-compose.yml <username>@<host>:/home/<username>/docker-compose.yml
+scp nginx.conf <username>@<host>:/home/<username>/nginx.conf
 ```
-* После успешной сборки на сервере выполните команды (только после первого деплоя):
-    - Соберите статические файлы:
+
+##### Cоздайте .env файл:
+На сервере создайте файл `nano .env` и заполните переменные окружения (или создайте этот файл локально и скопируйте файл по аналогии с предыдущим шагом):
+```bash
+SECRET_KEY=<SECRET_KEY>
+DEBUG=<True/False>
+
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_HOST=db
+DB_PORT=5432
+```
+
+##### Добавьте Secrets:
+Для работы с Workflow добавьте в Secrets GitHub переменные окружения для работы:
+```bash
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+DB_HOST=db
+DB_PORT=5432
+
+DOCKER_PASSWORD=<пароль DockerHub>
+DOCKER_USERNAME=<имя пользователя DockerHub>
+
+USER=<username для подключения к серверу>
+HOST=<IP сервера>
+PASSPHRASE=<пароль для сервера, если он установлен>
+SSH_KEY=<ваш SSH ключ (для получения команда: cat ~/.ssh/id_rsa)>
+
+TELEGRAM_TO=<ID своего телеграм-аккаунта>
+TELEGRAM_TOKEN=<токен вашего бота>
+```
+
+##### После успешного деплоя:
+Зайдите на боевой сервер и выполните команды:
+
+###### На сервере соберите docker-compose:
+```bash
+sudo docker-compose up -d --build
+```
+
+###### Создаем и применяем миграции:
+```bash
+sudo docker-compose exec backend python manage.py makemigrations --noinput
+sudo docker-compose exec backend python manage.py migrate --noinput
+```
+###### Подгружаем статику
+```bash
+sudo docker-compose exec backend python manage.py collectstatic --noinput 
+```
+###### Заполнить базу данных:
+```bash
+sudo docker-compose exec backend python manage.py loaddata fixtures/ingredients.json
+```
+###### Создать суперпользователя Django:
+```bash
+sudo docker-compose exec backend python manage.py createsuperuser
+```
+
+##### Шаг 9. Проект запущен:
+Проект будет доступен по вашему IP-адресу.
     ```
-    sudo docker-compose exec backend python manage.py collectstatic --noinput
-    ```
-    - Примените миграции:
-    ```
-    sudo docker-compose exec backend python manage.py migrate --noinput
-    ```
-    - Загрузите ингридиенты  в базу данных (необязательно):  
-    *Если файл не указывать, по умолчанию выберется ingredients.json*
-    ```
-    sudo docker-compose exec backend python manage.py load_ingredients <Название файла из директории data>
-    ```
-    - Создать суперпользователя Django:
-    ```
-    sudo docker-compose exec backend python manage.py createsuperuser
-    ```
-* Автор проекта:
+#### Автор проекта:
 ```
 Vedernikov Andrei
 Студент курса ЯндексПрактикум Python-разработчик
