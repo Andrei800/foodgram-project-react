@@ -112,7 +112,7 @@ sudo docker-compose exec backend python manage.py loaddata fixtures/ingredients.
 sudo docker-compose exec backend python manage.py createsuperuser
 ```
 
-##### Шаг 9. Проект запущен:
+##### Проект запущен:
 Проект будет доступен по вашему IP-адресу.
     ```
 #### Автор проекта:
