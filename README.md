@@ -113,8 +113,9 @@ sudo docker-compose exec backend python manage.py createsuperuser
 ```
 
 ##### Проект запущен:
+```
 Проект будет доступен по вашему IP-адресу.
-    ```
+```
 #### Автор проекта:
 ```
 Vedernikov Andrei
