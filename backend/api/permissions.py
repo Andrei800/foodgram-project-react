@@ -2,7 +2,7 @@ from rest_framework import permissions
 
 
 class IsAuthenticatedOwnerOrAdminOnly(permissions.BasePermission):
-    message = 'Access to edit only for owner or admin!'
+    message = "Access to edit only for owner or admin!"
 
     def has_permission(self, request, view):
         return (
@@ -18,7 +18,7 @@ class IsAuthenticatedOwnerOrAdminOnly(permissions.BasePermission):
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
-    message = 'Access only for admin!'
+    message = "Access only for admin!"
 
     def has_permission(self, request, view):
         return (request.method in permissions.SAFE_METHODS

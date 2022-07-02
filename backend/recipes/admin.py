@@ -1,90 +1,63 @@
 from django.contrib import admin
 
-from users.models import User, Subscription
-from recipes.models import (Cart, Favorite, Ingredient,
-                            IngredientInRecipes, Recipes, Tag, TagRecipes)
+from .models import (Favorite, Ingredient, IngredientInRecipe, Recipe,
+                     ShoppingCart, Tag, TagRecipe)
 
 
-class IngredientRecipesInline(admin.TabularInline):
-
-    model = IngredientInRecipes
+class IngredientInRecipeInline(admin.TabularInline):
+    model = IngredientInRecipe
     extra = 1
 
 
-class TagRecipesInline(admin.TabularInline):
-
-    model = TagRecipes
-    extra = 1
+class TagRecipeInline(admin.TabularInline):
+    model = Recipe.tags.through
 
 
-class UserAdmin(admin.ModelAdmin):
-
-    list_display = ('username', 'email', 'id')
-    search_fields = ('username', 'email')
-    empty_value_display = '-пусто-'
-    list_filter = ('username', 'email')
-
-
-class IngredientAdmin(admin.ModelAdmin):
-
-    list_display = ('name', 'measurement_unit')
-    search_fields = ('name', )
-    empty_value_display = '-пусто-'
-    list_filter = ('name',)
-
-
+@admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-
-    list_display = ('name', 'color', 'slug')
-    search_fields = ('name', )
-    empty_value_display = '-пусто-'
-    list_filter = ('name',)
+    inlines = [
+        TagRecipeInline,
+    ]
 
 
-class CartAdmin(admin.ModelAdmin):
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
+    list_display = ('name', 'measurement_unit', )
+    list_filter = ('name', )
+    inlines = (IngredientInRecipeInline,)
 
-    list_display = ('user', 'recipes', 'id')
-    search_fields = ('user', )
-    empty_value_display = '-пусто-'
-    list_filter = ('user',)
+
+@admin.register(Recipe)
+class RecipeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'author', 'amount_in_favorite')
+    list_filter = (
+        ('author', admin.RelatedOnlyFieldListFilter),
+        'name',
+        ('tags', admin.RelatedOnlyFieldListFilter),
+    )
+    inlines = [
+        IngredientInRecipeInline,
+        TagRecipeInline,
+    ]
+
+    @admin.display
+    def amount_in_favorite(self, obj):
+        return obj.recipe_foodgram_favorite_related.all().count()
 
 
+@admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-
-    list_display = ('user', 'recipes')
-    search_fields = ('user', )
-    empty_value_display = '-пусто-'
-    list_filter = ('user',)
+    pass
 
 
-class RecipesAdmin(admin.ModelAdmin):
-
-    inlines = (IngredientRecipesInline, TagRecipesInline,)
-    list_display = ('name', 'author', 'cooking_time',
-                    'id', 'count_favorite', 'pub_date')
-    search_fields = ('name', 'author', 'tags')
-    empty_value_display = '-пусто-'
-    list_filter = ('name', 'author', 'tags')
-
-    def count_favorite(self, obj):
-        return Favorite.objects.filter(recipes=obj).count()
-    count_favorite.short_description = 'Число добавлении в избранное'
+@admin.register(ShoppingCart)
+class ShoppingCartAdmin(admin.ModelAdmin):
+    pass
 
 
-class SubscriptionAdmin(admin.ModelAdmin):
-
-    list_display = ('user', 'following',)
-    search_fields = ('user',)
-    empty_value_display = '-пусто-'
-    list_filter = ('user',)
+@admin.register(TagRecipe)
+class TagRecipeAdmin(admin.ModelAdmin):
+    pass
 
 
-admin.site.register(Cart, CartAdmin)
-admin.site.register(Favorite, FavoriteAdmin)
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
-admin.site.unregister(Subscription)
-admin.site.register(Subscription, SubscriptionAdmin)
-admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Tag, TagAdmin)
-admin.site.register(Recipes, RecipesAdmin)
+empty_value_display = '-empty-'

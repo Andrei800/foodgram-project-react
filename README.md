@@ -1,125 +1,95 @@
-# Проект Foodgram
-![example workflow](https://github.com/Andrei800/foodgram-project-react/actions/workflows/foodgram_workflow.yml/badge.svg)  
-  
-[![Python](https://img.shields.io/badge/-Python-464646?style=flat-square&logo=Python)](https://www.python.org/)
-[![Django](https://img.shields.io/badge/-Django-464646?style=flat-square&logo=Django)](https://www.djangoproject.com/)
-[![Django REST Framework](https://img.shields.io/badge/-Django%20REST%20Framework-464646?style=flat-square&logo=Django%20REST%20Framework)](https://www.django-rest-framework.org/)
-[![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-464646?style=flat-square&logo=PostgreSQL)](https://www.postgresql.org/)
-[![Nginx](https://img.shields.io/badge/-NGINX-464646?style=flat-square&logo=NGINX)](https://nginx.org/ru/)
-[![gunicorn](https://img.shields.io/badge/-gunicorn-464646?style=flat-square&logo=gunicorn)](https://gunicorn.org/)
-[![docker](https://img.shields.io/badge/-Docker-464646?style=flat-square&logo=docker)](https://www.docker.com/)
-[![GitHub%20Actions](https://img.shields.io/badge/-GitHub%20Actions-464646?style=flat-square&logo=GitHub%20actions)](https://github.com/features/actions)
-[![Yandex.Cloud](https://img.shields.io/badge/-Yandex.Cloud-464646?style=flat-square&logo=Yandex.Cloud)](https://cloud.yandex.ru/)
+![example workflow](https://github.com/ArapatSunny/foodgram-project-react/actions/workflows/main.yml/badge.svg)
+
+# praktikum_new_diplom
+
+### Сайт Foodgram, «Продуктовый помощник».
+## Описание:
+На этом сервисе пользователи смогут публиковать рецепты, подписываться на публикации других пользователей, добавлять понравившиеся рецепты в список «Избранное», а перед походом в магазин скачивать сводный список продуктов, необходимых для приготовления одного или нескольких выбранных блюд.
+
+## Краткое описание запуска проекта
+Для работы проекта потребуются установленные Docker и Docker-compose.
+При выполнении команды docker-compose up в папке infra запустится сервис frontend, описанный в docker-compose.yml. Он подготовит файлы, необходимые для работы фронтенд-приложения, а затем прекратит свою работу.
+Проект запустится по адресу http://localhost/
+
+Увидеть спецификацию API: http://localhost/api/docs/
+
+# Сервисы и страницы проекта:
+Главная страница, Страница рецепта, Страница пользователя, Подписка на авторов, Список избранного, Список покупок, Фильтрация по тегам, Регистрация и авторизация
+
+### Технологии:
+django==3.2
+djangorestframework==3.13.1
+django-filter==21.1
+djoser==2.1.0
+drf-extra-fields==3.2.1
+drf-writable-nested==0.6.3
+drf-yasg==1.20.0
+gunicorn==20.0.4
+psycopg2-binary==2.9.3
+PostgreSQL
+nginx
+
+Модели: Ingredient, Tag, Recipe, Favorite, ShoppingCart, IngredientInRecipe
 
 
+### Как запустить проект:
+Клонировать репозиторий:
 
-Foodgram реализован для публикации рецептов. Авторизованные пользователи
-могут подписываться на понравившихся авторов, добавлять рецепты в избранное,
-в покупки, скачать список покупок ингредиентов для добавленных в покупки
-рецептов.
-
-## Подготовка и запуск проекта
-### Склонировать репозиторий на локальную машину:
 ```
-git clone https://github.com/Andrei800/foodgram-project-react
+git clone https://github.com/ArapatSunny/foodgram-project-react.git
 ```
-## Для работы с удаленным сервером:
-* Выполните вход на свой удаленный сервер
-
-##### Установите docker на сервер:
-Введите команду:
-```bash
-sudo apt install docker.io 
+перейти в директорию ../foodgram-project-react/infra/
 ```
-
-##### Установите docker-compose на сервер:
-Введите команды:
-```bash
-sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
+cd infra
 ```
-
-##### Локально отредактируйте файл nginx.conf
-Локально отредактируйте файл `infra/nginx.conf` и в строке `server_name` впишите свой IP.
-
-##### Скопируйте подготовленные файлы из каталога infra:
-Скопируйте подготовленные файлы `infra/docker-compose.yml` и `infra/nginx.conf` из вашего проекта на сервер в `home/<ваш_username>/docker-compose.yml` и `home/<ваш_username>/nginx.conf` соответственно.
-Введите команду из корневой папки проекта:
-```bash
-scp docker-compose.yml <username>@<host>:/home/<username>/docker-compose.yml
-scp nginx.conf <username>@<host>:/home/<username>/nginx.conf
+запустить сборку контейнеров:
 ```
-
-##### Cоздайте .env файл:
-На сервере создайте файл `nano .env` и заполните переменные окружения (или создайте этот файл локально и скопируйте файл по аналогии с предыдущим шагом):
-```bash
-SECRET_KEY=<SECRET_KEY>
-DEBUG=<True/False>
-
-DB_ENGINE=django.db.backends.postgresql
-DB_NAME=postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-DB_HOST=db
-DB_PORT=5432
+docker-compose up -d --build
 ```
+Копирование списка ингредиентов и тегов в контейнер с проектом:
+```
+docker cp ../data/ infra_backend_1:/app
+```
+вход в контейнер с проектом:
+```
+docker-compose exec backend bash
+```
+применение миграций:
+```
+python manage.py migrate</br>
+python manage.py makemigrations</br>
+python manage.py migrate</br>
 
-##### Добавьте Secrets:
-Для работы с Workflow добавьте в Secrets GitHub переменные окружения для работы:
-```bash
-DB_ENGINE=django.db.backends.postgresql
-DB_NAME=postgres
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=postgres
-DB_HOST=db
-DB_PORT=5432
-
-DOCKER_PASSWORD=<пароль DockerHub>
-DOCKER_USERNAME=<имя пользователя DockerHub>
-
-USER=<username для подключения к серверу>
-HOST=<IP сервера>
-PASSPHRASE=<пароль для сервера, если он установлен>
-SSH_KEY=<ваш SSH ключ (для получения команда: cat ~/.ssh/id_rsa)>
-
-TELEGRAM_TO=<ID своего телеграм-аккаунта>
-TELEGRAM_TOKEN=<токен вашего бота>
+```
+сбор статики
+```
+python manage.py collectstatic --no-input
+```
+создание администратора:
+```
+python manage.py createsuperuser
+```
+наполнение базы данных ингредиентами и тегами
+```
+python manage.py import --path './data/ingredients.csv' --model_name 'foodgram.Ingredient'
+```
+```
+python manage.py import --path './data/tags.csv' --model_name 'foodgram.Tag'
 ```
 
-##### После успешного деплоя:
-Зайдите на боевой сервер и выполните команды:
 
-###### На сервере соберите docker-compose:
-```bash
-sudo docker-compose up -d --build
-```
+### Примеры. Некоторые примеры запросов к API.
 
-###### Создаем и применяем миграции:
-```bash
-sudo docker-compose exec backend python manage.py makemigrations --noinput
-sudo docker-compose exec backend python manage.py migrate --noinput
+Запрос на получение списка рецептов:
 ```
-###### Подгружаем статику
-```bash
-sudo docker-compose exec backend python manage.py collectstatic --noinput 
+http://api/recipes/
 ```
-###### Заполнить базу данных:
-```bash
-sudo docker-compose exec backend python manage.py loaddata data/ingredients.json
+Запрос на получение списка подписок
 ```
-###### Создать суперпользователя Django:
-```bash
-sudo docker-compose exec backend python manage.py createsuperuser
+http://api/users/subscription
 ```
 
-##### Проект запущен:
-```
-Проект будет доступен по вашему IP-адресу.
-```
-#### Автор проекта:
-```
-Vedernikov Andrei
-Студент курса ЯндексПрактикум Python-разработчик
-Факультет Бэкенд.
-```
-
+Автор проекта:<br/>
+Ансарова Арапат<br/>
+Студент курса ЯндексПрактикум Python-разработчик<br/>
+Факультет Бэкенд.<br/>

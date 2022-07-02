@@ -141,3 +141,4 @@ backend/backend/.env
 ./data/fixtures2.json
 ./data/recipes
 ./docker-compose_down.txt
+
