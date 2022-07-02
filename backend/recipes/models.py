@@ -31,7 +31,7 @@ class Tag(models.Model):
     )
 
     class Meta:
-        ordering = ['name']
+        ordering = ('name',)
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
 
@@ -53,7 +53,7 @@ class Ingredient(models.Model):
     )
 
     class Meta:
-        ordering = ['name']
+        ordering = ('name',)
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
 
@@ -123,7 +123,7 @@ class Recipe(models.Model):
     objects = RecipeQuerySet.as_manager()
 
     class Meta:
-        ordering = ['-pub_date']
+        ordering = ('-pub_date',)
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
@@ -144,7 +144,10 @@ class TagRecipe(models.Model):
     )
 
     class Meta:
-        unique_together = [['recipe', 'tag']]
+        constraints = (
+            models.UniqueConstraint(fields=('recipe', 'tag',),
+                                    name='tag_recipe'),
+        )
 
     def __str__(self):
         return f'{self.recipe} {self.tag}'
@@ -162,13 +165,17 @@ class IngredientInRecipe(models.Model):
         related_name='ingredient_in_recipe'
     )
     amount = models.PositiveSmallIntegerField(
-        validators=[MinValueValidator(1)],
+        validators=(MinValueValidator(1),),
         help_text='Минимальное количество 1',
         verbose_name='Количество в рецепте',
     )
 
     class Meta:
-        unique_together = [['recipe', 'ingredient']]
+        constraints = (
+            models.UniqueConstraint(fields=('recipe', 'ingredient',),
+                                    name='ingredient_in_recipes'),
+        )
+
 
     def __str__(self):
         return f'{self.recipe} {self.ingredient}'
@@ -196,12 +203,12 @@ class UserRecipe(models.Model):
         abstract = True
         ordering = ['-created']
 
-        constraints = [
+        constraints = (
             models.UniqueConstraint(
-                fields=('user', 'recipe'),
-                name='%(class)s_unique_favorite_user_recipe'
-            )
-        ]
+                fields=('user', 'recipe',),
+                name='%(class)s_unique_favorite_user_recipes',
+            ),
+        )
 
     def __str__(self):
         return f'Пользователь: {self.user}, рецепт {self.recipe}'

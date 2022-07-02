@@ -63,7 +63,9 @@ class UserDjoserCreateSerializer(UserCreateSerializer):
 
 
 class UserDjoserSerializer(UserSerializer):
-    is_subscribed = serializers.SerializerMethodField()
+    is_subscribed = serializers.SerializerMethodField(
+        method_name='is_subscribed',
+    )
 
     class Meta:
         model = User
@@ -82,8 +84,14 @@ class UserDjoserSerializer(UserSerializer):
 
 
 class SubscriptionSerializer(UserDjoserSerializer):
-    recipes = serializers.SerializerMethodField(read_only=True)
-    recipes_count = serializers.SerializerMethodField(read_only=True)
+    recipes = serializers.SerializerMethodField(
+        read_only=True,
+        method_name='is_subscribed',
+    )
+    recipes_count = serializers.SerializerMethodField(
+        read_only=True,
+        method_name='is_subscribed',
+    )
 
     class Meta:
         model = User
@@ -135,7 +143,7 @@ class TagRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TagRecipe
-        fields = ('id', 'name', 'color', 'slug')
+        fields = ('id', 'name', 'color', 'slug',)
         validators = [
             UniqueTogetherValidator(
                 queryset=TagRecipe.objects.all(),
@@ -221,7 +229,7 @@ class RecipeSerializer(WritableNestedModelSerializer):
 class RecipeMinifiedSerializer(serializers.ModelSerializer):
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
+        fields = ('id', 'name', 'image', 'cooking_time',)
 
 
 class SubscriptionCreateSerializer(serializers.ModelSerializer):

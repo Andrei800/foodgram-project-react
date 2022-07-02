@@ -1,4 +1,4 @@
-from django.db.models import F, Sum
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -30,7 +30,7 @@ class UserViewSet(UserViewSet):
 
     @action(
         detail=False,
-        permission_classes=[IsAuthenticated]
+        permission_classes=(IsAuthenticated,)
     )
     def subscriptions(self, request):
         queryset = User.objects.filter(
@@ -43,7 +43,7 @@ class UserViewSet(UserViewSet):
 
     @action(
         detail=True,
-        methods=['post', 'delete'],
+        methods=('post', 'delete',),
         permission_classes=[IsAuthenticated]
     )
     def subscribe(self, request, id):
@@ -78,29 +78,26 @@ class UserViewSet(UserViewSet):
 
 
 class IngredientViewSet(ListRetrieveViewSet):
-    queryset = Ingredient.objects.all().order_by(F('name'))
     serializer_class = IngredientSerializer
     filter_backends = (IngredientFilter, )
-    http_method_names = ['get', ]
-    lookup_fields = ['id', ]
+    http_method_names = ('get',)
+    lookup_fields = ('id',)
     search_fields = ('^name', )
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class TagViewSet(ListRetrieveViewSet):
-    queryset = Tag.objects.all().order_by(F('id'))
     serializer_class = TagSerializer
-    http_method_names = ['get', ]
-    lookup_fields = ['id']
-    permission_classes = [IsAdminOrReadOnly]
+    http_method_names = ('get',)
+    lookup_fields = ('id',)
+    permission_classes = (IsAdminOrReadOnly,)
 
 
 class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
-    queryset = Recipe.objects.all()
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    http_method_names = ['get', 'post', 'patch', 'delete']
+    permission_classes = (IsAuthenticatedOrReadOnly,)
+    http_method_names = ('get', 'post', 'patch', 'delete',)
     pagination_class = UserRecipePagination
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = (DjangoFilterBackend)
     filter_class = RecipeFilter
 
     def get_queryset(self):
@@ -113,7 +110,7 @@ class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
 
     @action(
         detail=False,
-        permission_classes=[IsAuthenticated]
+        permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
         response = HttpResponse(content_type='text/plain')
@@ -159,8 +156,8 @@ class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
 
     @action(
         detail=True,
-        permission_classes=[IsAuthenticated],
-        methods=['POST', 'DELETE']
+        permission_classes=(IsAuthenticated,),
+        methods=('POST', 'DELETE',)
     )
     def shopping_cart(self, request, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
@@ -169,8 +166,8 @@ class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
 
     @action(
         detail=True,
-        permission_classes=[IsAuthenticated],
-        methods=['POST', 'DELETE']
+        permission_classes=(IsAuthenticated,),
+        methods=('POST', 'DELETE',)
     )
     def favorite(self, request, pk):
         recipe = get_object_or_404(Recipe, pk=pk)

@@ -12,11 +12,7 @@ DEBUG = bool(os.environ.get('DEBUG', ''))
 
 ALLOWED_HOSTS = ['*']
 
-
 INSTALLED_APPS = [
-    'api',
-    'users',
-    'recipes',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -28,6 +24,9 @@ INSTALLED_APPS = [
     'drf_extra_fields',
     'django_filters',
     'djoser',
+    'api',
+    'users',
+    'recipes',
 ]
 
 MIDDLEWARE = [
@@ -42,12 +41,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'backend.urls'
 
-TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -63,48 +60,32 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': os.getenv(
-            'DB_ENGINE', default='django.db.backends.postgresql_psycopg2'),
-        'NAME': os.getenv(
-            'DB_NAME', default='postgres'),
-        'USER': os.getenv(
-            'POSTGRES_USER', default='postgres'),
-        'PASSWORD': os.getenv(
-            'POSTGRES_PASSWORD', default='Flex3365'),
-        'HOST': os.getenv(
-            'DB_HOST'),
-        'PORT': os.getenv(
-            'DB_PORT', default='5432'),
+    "default": {
+        "ENGINE": os.getenv("DB_ENGINE", default="django.db.backends.postgresql"),
+        "NAME": os.getenv("POSTGRES_DB", default="postgres"),
+        "USER": os.getenv("POSTGRES_USER", default="postgres"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", default="Flex3365"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT", default="5432"),
     }
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': (
-            'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'
-        ),
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        'NAME': (
-            'django.contrib.auth.password_validation.MinimumLengthValidator'
-        ),
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        'NAME': (
-            'django.contrib.auth.password_validation.CommonPasswordValidator'
-        ),
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        'NAME': (
-            'django.contrib.auth.password_validation.NumericPasswordValidator'
-        ),
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
-
-LANGUAGE_CODE = 'ru-us'
+LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -114,19 +95,27 @@ USE_L10N = True
 
 USE_TZ = True
 
+STATIC_URL = "/static-files/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static-files")
+
+MEDIA_URL = "/media-files/"
+MEDIA_ROOT = os.path.join(BASE_DIR, "media-files")
+
+AUTH_USER_MODEL = "users.User"
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        'rest_framework.permissions.IsAuthenticated',
     ],
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'api.pagination.CustomPagination',
-
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',)
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
@@ -141,21 +130,3 @@ DJOSER = {
     },
     "HIDE_USERS": False,
 }
-
-AUTH_USER_MODEL = 'users.User'
-
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
-
-EMPTY_VALUE = '-пусто-'
-
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
-
-SHOP_LIST = 'shopping_list.txt'
