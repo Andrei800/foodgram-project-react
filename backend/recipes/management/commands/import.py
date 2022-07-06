@@ -2,7 +2,7 @@
 Для импорта данных выполните команду:
  python manage.py import
  --path "/c/Dev/foodgram-project-react/data/ingredients.csv"
- --model_name "foodgram.Ingredient"
+ --model_name "recipes.Ingredient"
 """
 import csv
 

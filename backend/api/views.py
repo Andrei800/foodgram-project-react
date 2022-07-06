@@ -9,9 +9,9 @@ from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
-from recipes.models import (Favorite, Ingredient,
+from recipes.models import (Favorite,
                              IngredientInRecipe, Recipe,
-                             ShoppingCart, Tag)
+                             ShoppingCart)
 from users.models import Subscription, User
 
 from .filters import IngredientFilter, RecipeFilter
@@ -25,7 +25,7 @@ from .serializers import (IngredientSerializer, RecipeMinifiedSerializer,
 
 
 class UserViewSet(UserViewSet):
-    http_method_names = ['get', 'post', 'delete']
+    http_method_names = ('get', 'post', 'delete',)
     pagination_class = UserRecipePagination
 
     @action(
@@ -44,7 +44,7 @@ class UserViewSet(UserViewSet):
     @action(
         detail=True,
         methods=('post', 'delete',),
-        permission_classes=[IsAuthenticated]
+        permission_classes=(IsAuthenticated,)
     )
     def subscribe(self, request, id):
         user = request.user

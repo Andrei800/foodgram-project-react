@@ -13,14 +13,14 @@ from users.models import Subscription, User
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ('id', 'name', 'color', 'slug')
-        read_only_fields = ('name', 'color', 'slug')
+        fields = ('id', 'name', 'color', 'slug',)
+        read_only_fields = ('name', 'color', 'slug',)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = ('id', 'name', 'measurement_unit', )
+        fields = ('id', 'name', 'measurement_unit',)
 
 
 class IngredientInRecipeSerializer(serializers.ModelSerializer):
