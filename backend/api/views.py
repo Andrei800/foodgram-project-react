@@ -10,22 +10,23 @@ from rest_framework.permissions import (IsAuthenticated,
 from rest_framework.response import Response
 
 from recipes.models import (Favorite,
-                             IngredientInRecipe, Recipe,
-                             ShoppingCart)
+                            IngredientInRecipe, Recipe, ShoppingCart)
 from users.models import Subscription, User
 
 from backend.settings import SHOP_LIST
 from api.filters import IngredientFilter, RecipeFilter
-from api.mixins import ListCreateRetrieveUpdateDestroyViewSet, ListRetrieveViewSet
+from api.mixins import (ListCreateRetrieveUpdateDestroyViewSet,
+                        ListRetrieveViewSet)
 from api.pagination import CustomPagination
 from api.permissions import IsAdminOrReadOnly
 from api.serializers import (IngredientSerializer, RecipeMinifiedSerializer,
-                          RecipeReadSerializer, RecipeSerializer,
-                          SubscriptionSerializer, TagSerializer,
-                          UserDjoserSerializer)
+                             RecipeReadSerializer, RecipeSerializer,
+                             SubscriptionSerializer, TagSerializer,
+                             UserDjoserSerializer)
 
 
 CONTENT_TYPE = 'text/plain'
+
 
 class UserViewSet(UserViewSet):
     http_method_names = ('get', 'post', 'delete',)

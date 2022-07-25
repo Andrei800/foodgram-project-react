@@ -176,7 +176,6 @@ class IngredientInRecipe(models.Model):
                                     name='ingredient_in_recipes'),
         )
 
-
     def __str__(self):
         return f'{self.recipe} {self.ingredient}'
 

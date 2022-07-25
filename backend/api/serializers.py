@@ -7,7 +7,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import (Ingredient, IngredientInRecipe, Recipe, Tag,
-                             TagRecipe)
+                            TagRecipe)
 from users.models import Subscription, User
 
 
@@ -200,6 +200,7 @@ class RecipeSerializer(WritableNestedModelSerializer):
                 ),
                 amount=ingredient_data['amount']
             )
+    
     @transaction.atomic
     def create(self, validated_data):
         ingredients_data = validated_data.pop('ingredients')
@@ -215,7 +216,8 @@ class RecipeSerializer(WritableNestedModelSerializer):
             instance,
             context={'request': self.context.get('request')}
         ).data
-    @transaction.atomic 
+
+    @transaction.atomic
     def update(self, instance, validated_data):
         ingredients_data = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
@@ -236,7 +238,7 @@ class RecipeMinifiedSerializer(serializers.ModelSerializer):
 class SubscriptionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
-        fields = ('user', 'following',) 
+        fields = ('user', 'following',)
 
         validators = [
             UniqueTogetherValidator(
