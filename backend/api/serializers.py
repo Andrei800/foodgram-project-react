@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from drf_extra_fields.fields import Base64ImageField
@@ -114,7 +115,7 @@ class SubscriptionSerializer(UserDjoserSerializer):
         ).data
 
     def get_recipes_count(self, obj):
-        return Recipe.objects.filter(author=obj).count()
+        return obj.recipes.count()
 
 
 class RecipeReadSerializer(serializers.ModelSerializer):
@@ -199,7 +200,7 @@ class RecipeSerializer(WritableNestedModelSerializer):
                 ),
                 amount=ingredient_data['amount']
             )
-
+    @transaction.atomic
     def create(self, validated_data):
         ingredients_data = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
@@ -214,7 +215,7 @@ class RecipeSerializer(WritableNestedModelSerializer):
             instance,
             context={'request': self.context.get('request')}
         ).data
-
+    @transaction.atomic 
     def update(self, instance, validated_data):
         ingredients_data = validated_data.pop('ingredients')
         tags_data = validated_data.pop('tags')
@@ -235,7 +236,7 @@ class RecipeMinifiedSerializer(serializers.ModelSerializer):
 class SubscriptionCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Subscription
-        fields = '__all__'
+        fields = ('user', 'following',) 
 
         validators = [
             UniqueTogetherValidator(

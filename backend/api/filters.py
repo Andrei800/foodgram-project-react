@@ -21,11 +21,11 @@ class RecipeFilter(FilterSet):
 
     class Meta:
         model = Recipe
-        fields = [
+        fields = (
             'author__id', 'tags__slug',
             'is_favorited',
             'is_in_shopping_cart'
-        ]
+        )
 
 
 class IngredientFilter(SearchFilter):

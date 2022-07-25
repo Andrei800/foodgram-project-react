@@ -14,19 +14,22 @@ from recipes.models import (Favorite,
                              ShoppingCart)
 from users.models import Subscription, User
 
-from .filters import IngredientFilter, RecipeFilter
-from .mixins import ListCreateRetrieveUpdateDestroyViewSet, ListRetrieveViewSet
-from .pagination import UserRecipePagination
-from .permissions import IsAdminOrReadOnly
-from .serializers import (IngredientSerializer, RecipeMinifiedSerializer,
+from backend.settings import SHOP_LIST
+from api.filters import IngredientFilter, RecipeFilter
+from api.mixins import ListCreateRetrieveUpdateDestroyViewSet, ListRetrieveViewSet
+from api.pagination import CustomPagination
+from api.permissions import IsAdminOrReadOnly
+from api.serializers import (IngredientSerializer, RecipeMinifiedSerializer,
                           RecipeReadSerializer, RecipeSerializer,
                           SubscriptionSerializer, TagSerializer,
                           UserDjoserSerializer)
 
 
+CONTENT_TYPE = 'text/plain'
+
 class UserViewSet(UserViewSet):
     http_method_names = ('get', 'post', 'delete',)
-    pagination_class = UserRecipePagination
+    pagination_class = CustomPagination
 
     @action(
         detail=False,
@@ -96,7 +99,7 @@ class TagViewSet(ListRetrieveViewSet):
 class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     http_method_names = ('get', 'post', 'patch', 'delete',)
-    pagination_class = UserRecipePagination
+    pagination_class = CustomPagination
     filter_backends = (DjangoFilterBackend)
     filter_class = RecipeFilter
 
@@ -114,9 +117,7 @@ class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
     )
     def download_shopping_cart(self, request):
         response = HttpResponse(content_type='text/plain')
-        response[
-            'Content-Disposition'
-        ] = 'attachment; filename=shopping_list.txt'
+        response['Content-Disposition'] = 'attachment;', SHOP_LIST
 
         user = request.user
         ingredients = IngredientInRecipe.objects.filter(

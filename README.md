@@ -48,7 +48,8 @@ docker-compose up -d --build
 ```
 Копирование списка ингредиентов и тегов в контейнер с проектом:
 ```
-docker cp ../data/ infra_backend_1:/app
+docker cp ../data/ infra-backend-1:/app
+docker cp ../backend/recipes/management/ infra-backend-1:/app/recipes
 ```
 вход в контейнер с проектом:
 ```
@@ -71,10 +72,10 @@ python manage.py createsuperuser
 ```
 наполнение базы данных ингредиентами и тегами
 ```
-python manage.py import --path './data/ingredients.csv' --model_name 'foodgram.Ingredient'
+python manage.py import --path './data/ingredients.csv' --model_name 'recipes.Ingredient'
 ```
 ```
-python manage.py import --path './data/tags.csv' --model_name 'foodgram.Tag'
+python manage.py import --path './data/tags.csv' --model_name 'recipes.Tag'
 ```
 
 

@@ -66,7 +66,7 @@ DATABASES = {
         "NAME": os.getenv("POSTGRES_DB", default="postgres"),
         "USER": os.getenv("POSTGRES_USER", default="postgres"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD", default="Flex3365"),
-        "HOST": os.getenv("DB_HOST", default="db"),
+        "HOST": os.getenv("DB_HOST"),
         "PORT": os.getenv("DB_PORT", default="5432"),
     }
 }
@@ -132,3 +132,5 @@ DJOSER = {
     },
     "HIDE_USERS": False,
 }
+
+SHOP_LIST = 'shopping_list.txt'
