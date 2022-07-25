@@ -200,7 +200,7 @@ class RecipeSerializer(WritableNestedModelSerializer):
                 ),
                 amount=ingredient_data['amount']
             )
-    
+
     @transaction.atomic
     def create(self, validated_data):
         ingredients_data = validated_data.pop('ingredients')
