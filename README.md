@@ -92,7 +92,7 @@ http://api/users/subscription
 
 Сайт доступен по адресу: http://51.250.101.226
 
-Админка доступна по адресу: http://51.250.101.226/admin
+Админка доступна по адресу: http://51.250.101.226/admin/
 
 Вход в панель администратора: login: vedernikov@gmail.com password: flex3365
 
