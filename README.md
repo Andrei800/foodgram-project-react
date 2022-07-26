@@ -38,7 +38,7 @@ nginx
 ```
 git clone https://github.com/ArapatSunny/foodgram-project-react.git
 ```
-перейти в директорию ../foodgram-project-react/infra/
+перейти в директорию /foodgram-project-react/infra/
 ```
 cd infra
 ```
