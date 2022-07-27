@@ -13,6 +13,7 @@ from recipes.models import (Favorite,
                             IngredientInRecipe, Recipe, ShoppingCart)
 from users.models import Subscription, User
 
+from backend.settings import SHOP_LIST
 from api.filters import IngredientFilter, RecipeFilter
 from api.mixins import (ListCreateRetrieveUpdateDestroyViewSet,
                         ListRetrieveViewSet)
@@ -113,13 +114,12 @@ class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
 
     @action(
         detail=False,
+        methods=('GET',),
         permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
         response = HttpResponse(content_type='text/plain')
-        response[
-            'Content-Disposition'
-        ] = 'attachment; filename=shopping_list.txt'
+        response['Content-Disposition'] = 'attachment; filename=' + SHOP_LIST
 
         user = request.user
         ingredients = IngredientInRecipe.objects.filter(
