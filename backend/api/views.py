@@ -118,7 +118,9 @@ class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
     )
     def download_shopping_cart(self, request):
         response = HttpResponse(content_type='text/plain')
-        response['Content-Disposition'] = 'attachment;', SHOP_LIST
+        response[
+            'Content-Disposition'
+        ] = 'attachment; filename=shopping_list.txt'
 
         user = request.user
         ingredients = IngredientInRecipe.objects.filter(
