@@ -13,7 +13,6 @@ from recipes.models import (Favorite,
                             IngredientInRecipe, Recipe, ShoppingCart)
 from users.models import Subscription, User
 
-from backend.settings import SHOP_LIST
 from api.filters import IngredientFilter, RecipeFilter
 from api.mixins import (ListCreateRetrieveUpdateDestroyViewSet,
                         ListRetrieveViewSet)
