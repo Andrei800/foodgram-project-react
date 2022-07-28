@@ -40,7 +40,7 @@ jobs:
       with:
         push: true
         context: backend/
-        tags: admin12352354/foodgram
+        tags: admin12352354/foodgram-backend:v1
         file: backend/Dockerfile
 
     - name: Push to Docker Hub
