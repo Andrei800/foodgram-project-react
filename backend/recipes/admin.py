@@ -15,8 +15,8 @@ class TagRecipeInline(admin.TabularInline):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'color', 'slug']
-    search_fields = ['name', 'slug']
+    list_display = ('id', 'name', 'color', 'slug',)
+    search_fields =('name', 'slug',)
 
 
 @admin.register(Ingredient)
@@ -31,8 +31,6 @@ class IngredientAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'amount_in_favorite')
     list_filter = (
-        ('author', admin.RelatedOnlyFieldListFilter),
-        'name',
         ('tags', admin.RelatedOnlyFieldListFilter),
     )
     inlines = [
@@ -48,11 +46,17 @@ class RecipeAdmin(admin.ModelAdmin):
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     search_fields = ('recipes', 'user__username', 'user__email',)
+    list_filter = (
+        ('tags', admin.RelatedOnlyFieldListFilter),
+    )
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
     search_fields = ('recipes', 'user__username', 'user__email',)
+    list_filter = (
+        ('tags', admin.RelatedOnlyFieldListFilter),
+    )
 
 
 @admin.register(TagRecipe)
