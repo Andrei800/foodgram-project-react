@@ -118,12 +118,29 @@ class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
+        ingredients = IngredientInRecipe.objects.filter(
+            recipe__in_purchases__user=request.user).values(
+            'ingredient__name',
+            'ingredient__measurement_unit').annotate(total=Sum('amount'))
+
+        shopping_cart = '\n'.join([
+            f'{ingredient["ingredient__name"]} - {ingredient["total"]} '
+            f'{ingredient["ingredient__measurement_unit"]}'
+            for ingredient in ingredients
+        ])
+        filename = 'shopping_cart.txt'
+        response = HttpResponse(shopping_cart, content_type='text/plain')
+        response['Content-Disposition'] = f'attachment; filename={filename}'
+        return response
+
+
+    def download_shopping_cart(self, request):
         response = HttpResponse(content_type='text/plain')
         response['Content-Disposition'] = 'attachment; filename=' + SHOP_LIST
 
         user = request.user
         ingredients = IngredientInRecipe.objects.filter(
-            recipe__foodgram_shoppingcarts__user=user
+            recipe__recipes_shoppingcarts__user=user
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit').annotate(
