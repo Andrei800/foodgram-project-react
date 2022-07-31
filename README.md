@@ -36,7 +36,7 @@ nginx
 Клонировать репозиторий:
 
 ```
-git clone git@github.com:Andrei800/foodgram-project-react.git
+git clone https://github.com/ArapatSunny/foodgram-project-react.git
 ```
 перейти в директорию /foodgram-project-react/infra/
 ```
@@ -94,6 +94,7 @@ http://api/users/subscription
 
 Админка доступна по адресу: http://51.250.101.226/admin/
 
+Вход в панель администратора: login: vedernikov@gmail.com password: flex3365
 
 Автор проекта:<br/>
 Ведерников Андрей<br/>

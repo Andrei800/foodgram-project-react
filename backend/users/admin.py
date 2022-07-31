@@ -5,13 +5,12 @@ from users.models import Subscription, User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    search_fields = ('username', 'email',)
+    list_filter = ('email', 'username', )
 
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ('user', 'author',)
-    search_fields = ('username', 'email',)
+    pass
 
 
 empty_value_display = "-пусто-"

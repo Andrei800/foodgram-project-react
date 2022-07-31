@@ -64,7 +64,7 @@ class UserDjoserCreateSerializer(UserCreateSerializer):
 
 
 class UserDjoserSerializer(UserSerializer):
-    subscribed = serializers.SerializerMethodField(
+    is_subscribed = serializers.SerializerMethodField(
         method_name='is_subscribed',
     )
 
@@ -73,10 +73,10 @@ class UserDjoserSerializer(UserSerializer):
         fields = (
             'email', 'id', 'username', 'first_name',
             'last_name',
-            'subscribed',
+            'is_subscribed',
         )
 
-    def is_subscribed(self, obj):
+    def get_is_subscribed(self, obj):
         user = self.context['request'].user
         return (
             user.is_authenticated
@@ -87,11 +87,11 @@ class UserDjoserSerializer(UserSerializer):
 class SubscriptionSerializer(UserDjoserSerializer):
     recipes = serializers.SerializerMethodField(
         read_only=True,
-        method_name='get_recipes',
+        method_name='is_subscribed',
     )
     recipes_count = serializers.SerializerMethodField(
         read_only=True,
-        method_name='get_recipes_count',
+        method_name='is_subscribed',
     )
 
     class Meta:

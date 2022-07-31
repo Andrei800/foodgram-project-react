@@ -10,7 +10,7 @@ services:
     restart: always
 
   backend:
-    image: admin12352354/foodgram_backend
+    image: admin12352354/foodgram-backend:v1
     restart: always
     depends_on:
       - db
@@ -39,6 +39,7 @@ services:
       - ../frontend/:/app/result_build/
     depends_on:
       - backend
+
 
 
 volumes:

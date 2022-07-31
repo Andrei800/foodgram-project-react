@@ -15,15 +15,15 @@ class TagRecipeInline(admin.TabularInline):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'color', 'slug',)
-    search_fields = ('name', 'slug',)
+    inlines = [
+        TagRecipeInline,
+    ]
 
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'measurement_unit',)
-    search_fields = ('name',)
-    list_filter = ('measurement_unit', )
+    list_display = ('name', 'measurement_unit', )
+    list_filter = ('name', )
     inlines = (IngredientInRecipeInline,)
 
 
@@ -31,6 +31,8 @@ class IngredientAdmin(admin.ModelAdmin):
 class RecipeAdmin(admin.ModelAdmin):
     list_display = ('name', 'author', 'amount_in_favorite')
     list_filter = (
+        ('author', admin.RelatedOnlyFieldListFilter),
+        'name',
         ('tags', admin.RelatedOnlyFieldListFilter),
     )
     inlines = [
@@ -40,29 +42,22 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display
     def amount_in_favorite(self, obj):
-        return obj.recipe_recipes_favorite_related.all().count()
+        return obj.recipe_foodgram_favorite_related.all().count()
 
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    search_fields = ('recipes', 'user__username', 'user__email',)
-    list_filter = (
-        ('tags', admin.RelatedOnlyFieldListFilter),
-    )
+    pass
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
-    search_fields = ('recipes', 'user__username', 'user__email',)
-    list_filter = (
-        ('tags', admin.RelatedOnlyFieldListFilter),
-    )
+    pass
 
 
 @admin.register(TagRecipe)
 class TagRecipeAdmin(admin.ModelAdmin):
-    search_fields = ('recipes', 'user__username', 'user__email',)
-    list_filter = ('tag',)
+    pass
 
 
 empty_value_display = '-empty-'

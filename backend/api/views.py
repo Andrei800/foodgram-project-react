@@ -9,8 +9,8 @@ from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
-from recipes.models import (Favorite, Ingredient,
-                            IngredientInRecipe, Recipe, ShoppingCart, Tag)
+from recipes.models import (Favorite,
+                            IngredientInRecipe, Recipe, ShoppingCart)
 from users.models import Subscription, User
 
 from backend.settings import SHOP_LIST
@@ -82,7 +82,6 @@ class UserViewSet(UserViewSet):
 
 
 class IngredientViewSet(ListRetrieveViewSet):
-    queryset = Ingredient.objects.all().order_by('name')
     serializer_class = IngredientSerializer
     filter_backends = (IngredientFilter, )
     http_method_names = ('get',)
@@ -92,7 +91,6 @@ class IngredientViewSet(ListRetrieveViewSet):
 
 
 class TagViewSet(ListRetrieveViewSet):
-    queryset = Tag.objects.all().order_by('name')
     serializer_class = TagSerializer
     http_method_names = ('get',)
     lookup_fields = ('id',)
@@ -120,11 +118,11 @@ class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
     )
     def download_shopping_cart(self, request):
         response = HttpResponse(content_type='text/plain')
-        response['Content-Disposition'] = 'attachment; filename=' + SHOP_LIST
+        response['Content-Disposition'] = 'attachment;', SHOP_LIST
 
         user = request.user
         ingredients = IngredientInRecipe.objects.filter(
-            recipe__recipes_shoppingcarts__user=user
+            recipe__foodgram_shoppingcarts__user=user
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit').annotate(
