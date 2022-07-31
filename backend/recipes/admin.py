@@ -46,17 +46,11 @@ class RecipeAdmin(admin.ModelAdmin):
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     search_fields = ('recipes', 'user__username', 'user__email',)
-    list_filter = (
-        ('tags', admin.RelatedOnlyFieldListFilter),
-    )
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
     search_fields = ('recipes', 'user__username', 'user__email',)
-    list_filter = (
-        ('tags', admin.RelatedOnlyFieldListFilter),
-    )
 
 
 @admin.register(TagRecipe)
