@@ -10,7 +10,8 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('user', 'author',)
+    search_fields = ('username', 'email',)
 
 
 empty_value_display = "-пусто-"
