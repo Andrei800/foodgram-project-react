@@ -34,12 +34,11 @@ services:
       - frontend
 
   frontend:
-    image: admin12352354/foodgram_frontend
+    image: admin12352354/foodgram_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
       - backend
-
 
 
 volumes:
