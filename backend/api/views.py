@@ -8,8 +8,9 @@ from rest_framework.decorators import action
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
+from backend.recipes.models import Ingredient
 
-from recipes.models import (Favorite,
+from recipes.models import (Favorite, Ingredient,
                             IngredientInRecipe, Recipe, ShoppingCart, Tag)
 from users.models import Subscription, User
 
@@ -82,6 +83,7 @@ class UserViewSet(UserViewSet):
 
 
 class IngredientViewSet(ListRetrieveViewSet):
+    queryset = Ingredient.objects.all().order_by('name')
     serializer_class = IngredientSerializer
     filter_backends = (IngredientFilter, )
     http_method_names = ('get',)
