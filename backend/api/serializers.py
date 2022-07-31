@@ -76,7 +76,7 @@ class UserDjoserSerializer(UserSerializer):
             'is_subscribed',
         )
 
-    def get_is_subscribed(self, obj):
+    def is_subscribed(self, obj):
         user = self.context['request'].user
         return (
             user.is_authenticated
