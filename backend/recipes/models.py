@@ -60,23 +60,6 @@ class Ingredient(models.Model):
     def __str__(self):
         return self.name
 
-
-class RecipeQuerySet(models.QuerySet):
-    def add_user_annotations(self, user_id):
-        return self.annotate(
-            is_favorited=Exists(
-                Favorite.objects.filter(
-                    user_id=user_id, recipe__pk=OuterRef('pk')
-                )
-            ),
-            is_in_shopping_cart=Exists(
-                ShoppingCart.objects.filter(
-                    user_id=user_id, recipe__pk=OuterRef('pk')
-                )
-            ),
-        )
-
-
 class Recipe(models.Model):
     author = models.ForeignKey(
         User,
@@ -119,8 +102,6 @@ class Recipe(models.Model):
         verbose_name="Дата публикации",
         auto_now_add=True,
     )
-
-    objects = RecipeQuerySet.as_manager()
 
     class Meta:
         ordering = ('-pub_date',)
