@@ -64,7 +64,7 @@ class UserDjoserCreateSerializer(UserCreateSerializer):
 
 
 class UserDjoserSerializer(UserSerializer):
-    is_subscribed = serializers.SerializerMethodField(
+    get_is_subscribed = serializers.SerializerMethodField(
         method_name='is_subscribed',
     )
 
@@ -76,7 +76,7 @@ class UserDjoserSerializer(UserSerializer):
             'is_subscribed',
         )
 
-    def is_subscribed(self, obj):
+    def get_is_subscribed(self, obj):
         user = self.context['request'].user
         return (
             user.is_authenticated
