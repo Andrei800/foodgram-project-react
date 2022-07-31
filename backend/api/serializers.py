@@ -73,7 +73,7 @@ class UserDjoserSerializer(UserSerializer):
         fields = (
             'email', 'id', 'username', 'first_name',
             'last_name',
-            'is_subscribed',
+            'subscribed',
         )
 
     def is_subscribed(self, obj):

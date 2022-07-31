@@ -10,7 +10,7 @@ from rest_framework.permissions import (IsAuthenticated,
 from rest_framework.response import Response
 
 from recipes.models import (Favorite,
-                            IngredientInRecipe, Recipe, ShoppingCart)
+                            IngredientInRecipe, Recipe, ShoppingCart, Tag)
 from users.models import Subscription, User
 
 from backend.settings import SHOP_LIST
@@ -91,6 +91,7 @@ class IngredientViewSet(ListRetrieveViewSet):
 
 
 class TagViewSet(ListRetrieveViewSet):
+    queryset = Tag.objects.all().order_by('id')
     serializer_class = TagSerializer
     http_method_names = ('get',)
     lookup_fields = ('id',)
