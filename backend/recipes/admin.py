@@ -40,7 +40,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display
     def amount_in_favorite(self, obj):
-        return obj.recipe_foodgram_favorite_related.all().count()
+        return obj.recipe_recipes_favorite_related.all().count()
 
 
 @admin.register(Favorite)

@@ -40,7 +40,7 @@ jobs:
       with:
         push: true
         context: ./backend/
-        tags: ${{ secrets.DOCKER_USERNAME }}/foodgram-backend:v1
+        tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend
         file: backend/Dockerfile
 
     - name: Push to Docker Hub
@@ -63,7 +63,7 @@ jobs:
         passphrase: ${{ secrets.PASSPHRASE }}
         stack_file_name: docker-compose.yaml
         script: |
-          sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-backend:v1
+          sudo docker pull ${{ secrets.DOCKER_USERNAME }}4/foodgram_backend
           sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram-frontend
           sudo docker-compose stop 
           sudo docker-compose rm backend 
