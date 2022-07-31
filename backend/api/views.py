@@ -114,7 +114,6 @@ class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
 
     @action(
         detail=False,
-        methods=('GET',),
         permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
