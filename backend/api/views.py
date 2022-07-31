@@ -8,7 +8,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from backend.recipes.models import Ingredient
 
 from recipes.models import (Favorite, Ingredient,
                             IngredientInRecipe, Recipe, ShoppingCart, Tag)
@@ -93,7 +92,7 @@ class IngredientViewSet(ListRetrieveViewSet):
 
 
 class TagViewSet(ListRetrieveViewSet):
-    queryset = Tag.objects.all().order_by('id')
+    queryset = Tag.objects.all().order_by('name')
     serializer_class = TagSerializer
     http_method_names = ('get',)
     lookup_fields = ('id',)

@@ -31,7 +31,7 @@ class Tag(models.Model):
     )
 
     class Meta:
-        ordering = ('id',)
+        ordering = ('name',)
         verbose_name = 'Tag'
         verbose_name_plural = 'Tags'
 
