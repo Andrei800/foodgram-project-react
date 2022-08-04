@@ -17,13 +17,16 @@ class TagRecipeInline(admin.TabularInline):
 class TagAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'color', 'slug',)
     search_fields = ('name', 'slug',)
+    inlines = [
+        TagRecipeInline,
+    ]
 
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit',)
     search_fields = ('name',)
-    list_filter = ('measurement_unit', )
+    list_filter = ('measurement_unit',)
     inlines = (IngredientInRecipeInline,)
 
 

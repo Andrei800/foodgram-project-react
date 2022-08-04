@@ -1,4 +1,5 @@
-from django.db.models import Sum
+from django.db import models
+from django.db.models import Sum, Exists, OuterRef
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -26,7 +27,7 @@ from api.serializers import (IngredientSerializer, RecipeMinifiedSerializer,
 
 
 CONTENT_TYPE = 'text/plain'
-
+ 
 
 class UserViewSet(UserViewSet):
     http_method_names = ('get', 'post', 'delete',)
@@ -82,7 +83,7 @@ class UserViewSet(UserViewSet):
 
 
 class IngredientViewSet(ListRetrieveViewSet):
-    queryset = Ingredient.objects.all().order_by('name')
+    queryset = Ingredient.objects.all().order_by('name',)
     serializer_class = IngredientSerializer
     filter_backends = (IngredientFilter, )
     http_method_names = ('get',)
@@ -92,19 +93,39 @@ class IngredientViewSet(ListRetrieveViewSet):
 
 
 class TagViewSet(ListRetrieveViewSet):
-    queryset = Tag.objects.all().order_by('name')
+    queryset = Tag.objects.all().order_by('name',)
     serializer_class = TagSerializer
     http_method_names = ('get',)
     lookup_fields = ('id',)
     permission_classes = (IsAdminOrReadOnly,)
 
 
+class RecipeQuerySet(models.QuerySet):
+    def add_user_annotations(self, user_id):
+        return self.annotate(
+            is_favorited=Exists(
+                Favorite.objects.filter(
+                    user_id=user_id, recipe__pk=OuterRef('pk')
+                )
+            ),
+            is_in_shopping_cart=Exists(
+                ShoppingCart.objects.filter(
+                    user_id=user_id, recipe__pk=OuterRef('pk')
+                )
+            ),
+        )
+
+
 class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
     http_method_names = ('get', 'post', 'patch', 'delete',)
     pagination_class = CustomPagination
-    filter_backends = (DjangoFilterBackend)
+    filter_backends = (DjangoFilterBackend,)
     filter_class = RecipeFilter
+    queryset = Recipe.objects.all()
+
+    def get_queryset(self):
+        return self.queryset.add_user_annotations(self.request.user.id)
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -121,7 +142,7 @@ class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
 
         user = request.user
         ingredients = IngredientInRecipe.objects.filter(
-            recipe__foodgram_shoppingcarts__user=user
+            recipe__recipes_shoppingcarts__user=user
         ).values(
             'ingredient__name',
             'ingredient__measurement_unit').annotate(

@@ -48,8 +48,8 @@ docker-compose up -d --build
 ```
 Копирование списка ингредиентов и тегов в контейнер с проектом:
 ```
-docker cp ../data/ infra-backend-1:/app
-docker cp ../backend/recipes/management/ infra-backend-1:/app/recipes
+docker cp ../data/ infra_backend_1:/app
+docker cp ../backend/recipes/management/ infra_backend_1:/app/recipes
 ```
 вход в контейнер с проектом:
 ```

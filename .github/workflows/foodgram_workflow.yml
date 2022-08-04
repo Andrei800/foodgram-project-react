@@ -40,8 +40,8 @@ jobs:
       with:
         push: true
         context: backend/
-        tags: admin12352354/foodgram_backend
-        file: backend/Dockerfile
+        tags: ${{ secrets.DOCKER_USERNAME }}/foodgram_backend
+      file: backend/Dockerfile
 
     - name: Push to Docker Hub
       uses: docker/build-push-action@v2

@@ -6,8 +6,8 @@ from drf_writable_nested.serializers import WritableNestedModelSerializer
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 
-from recipes.models import (Ingredient, IngredientInRecipe, Recipe, Tag,
-                            TagRecipe)
+from recipes.models import (ShoppingCart, Ingredient, IngredientInRecipe,
+                            Favorite, Recipe, Tag, TagRecipe)
 from users.models import Subscription, User
 
 
@@ -99,7 +99,7 @@ class SubscriptionSerializer(UserDjoserSerializer):
         depth = 1
         fields = (
             'email', 'id', 'username', 'first_name',
-            'last_name', 'is_subscribed',
+            'last_name', 'subscribed',
             'recipes', 'recipes_count',
         )
 

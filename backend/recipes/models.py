@@ -1,5 +1,6 @@
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db.models import Exists, OuterRef
 
 from users.models import User
 
@@ -31,8 +32,8 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ('name',)
-        verbose_name = 'Tag'
-        verbose_name_plural = 'Tags'
+        verbose_name = 'Тег'
+        verbose_name_plural = 'Теги'
 
     def __str__(self):
         return self.name
@@ -53,12 +54,27 @@ class Ingredient(models.Model):
 
     class Meta:
         ordering = ('name',)
-        verbose_name = 'Ingredient'
-        verbose_name_plural = 'Ingredients'
+        verbose_name = 'Ингредиент'
+        verbose_name_plural = 'Ингредиенты'
 
     def __str__(self):
         return self.name
 
+
+class RecipeQuerySet(models.QuerySet):
+    def add_user_annotations(self, user_id):
+        return self.annotate(
+            is_favorited=Exists(
+                Favorite.objects.filter(
+                    user_id=user_id, recipe__pk=OuterRef('pk')
+                )
+            ),
+            is_in_shopping_cart=Exists(
+                ShoppingCart.objects.filter(
+                    user_id=user_id, recipe__pk=OuterRef('pk')
+                )
+            ),
+        )
 
 class Recipe(models.Model):
     author = models.ForeignKey(
@@ -103,10 +119,12 @@ class Recipe(models.Model):
         auto_now_add=True,
     )
 
+    objects = RecipeQuerySet.as_manager()
+
     class Meta:
         ordering = ('-pub_date',)
-        verbose_name = 'Recipe'
-        verbose_name_plural = 'Recipes'
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
 
     def __str__(self):
         return self.name
@@ -194,47 +212,9 @@ class UserRecipe(models.Model):
         return f'Пользователь: {self.user}, рецепт {self.recipe}'
 
 
-class Favorite(models.Model):
-    user = models.ForeignKey(
-        User,
-        related_name='favorite_recipes',
-        on_delete=models.CASCADE
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        related_name='in_favorites',
-        on_delete=models.CASCADE
-    )
-
-    class Meta:
-        verbose_name = 'Избранное'
-        verbose_name_plural = 'Избранное'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'recipe'], name='unique_favorite',
-            )
-        ]
+class Favorite(UserRecipe):
+    pass
 
 
-class ShoppingCart(models.Model):
-    user = models.ForeignKey(
-        User,
-        related_name='purchase_recipes',
-        on_delete=models.CASCADE
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        related_name='in_purchases',
-        on_delete=models.CASCADE)
-
-    class Meta:
-        verbose_name = 'shopping list'
-        verbose_name_plural = 'shopping list'
-        constraints = [
-            models.UniqueConstraint(
-                fields=['user', 'recipe'], name='unique_shopping_cart',
-            )
-        ]
-
-    def __str__(self):
-        return f'Рецепт {self.recipe} в списке покупок у {self.user}'
+class ShoppingCart(UserRecipe):
+    pass
