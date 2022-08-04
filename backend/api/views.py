@@ -27,7 +27,7 @@ from api.serializers import (IngredientSerializer, RecipeMinifiedSerializer,
 
 
 CONTENT_TYPE = 'text/plain'
- 
+
 
 class UserViewSet(UserViewSet):
     http_method_names = ('get', 'post', 'delete',)

@@ -76,6 +76,7 @@ class RecipeQuerySet(models.QuerySet):
             ),
         )
 
+
 class Recipe(models.Model):
     author = models.ForeignKey(
         User,
