@@ -36,7 +36,7 @@ nginx
 Клонировать репозиторий:
 
 ```
-git clone https://github.com/ArapatSunny/foodgram-project-react.git
+git clone https://github.com/Andrei800/foodgram-project-react.git
 ```
 перейти в директорию /foodgram-project-react/infra/
 ```
