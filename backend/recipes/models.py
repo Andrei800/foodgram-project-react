@@ -195,10 +195,6 @@ class UserRecipe(models.Model):
         related_query_name='%(app_label)s_%(class)ss',
         verbose_name='Recipe'
     )
-    tags = models.ManyToManyField(
-        Tag,
-        related_name='tags',
-    )
     created = models.DateTimeField(
         auto_now_add=True, db_index=True)
 
