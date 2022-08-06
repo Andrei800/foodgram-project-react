@@ -214,7 +214,7 @@ class UserRecipe(models.Model):
         )
 
     def __str__(self):
-        return f'Пользователь: {self.user}, рецепт {self.recipe}'
+        return f'User: {self.user}, recipe {self.recipe}'
 
 
 class Favorite(UserRecipe):

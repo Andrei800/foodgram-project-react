@@ -6,7 +6,7 @@ ADMIN = 'admin'
 
 
 class User(AbstractUser):
-    username = models.CharField(verbose_name='Имя пользователя',
+    username = models.CharField(verbose_name='Username',
                                 unique=True, max_length=150)
     email = models.EmailField(max_length=254, unique=True, blank=False)
     first_name = models.CharField(max_length=150, blank=False)
