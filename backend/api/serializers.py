@@ -105,7 +105,7 @@ class SubscriptionSerializer(UserDjoserSerializer):
 
     def get_recipes(self, obj):
         request = self.context.get('request')
-        limit = request.GET.get("recipes_limit", None)
+        limit = request.GET.get('recipes_limit', None)
         if limit is not None:
             recipes = Recipe.objects.filter(author=obj)[:int(limit)]
         else:
