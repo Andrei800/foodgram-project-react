@@ -62,7 +62,8 @@ class ShoppingCartAdmin(admin.ModelAdmin):
 
 @admin.register(TagRecipe)
 class TagRecipeAdmin(admin.ModelAdmin):
-    search_fields = ('recipe__name', 'recipe__author__username', 'recipe__author__email',)
+    search_fields = ('recipe__name', 'recipe__author__username',
+                     'recipe__author__email',)
     list_filter = ('tag',)
 
 
