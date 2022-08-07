@@ -178,7 +178,7 @@ class RecipeSerializer(WritableNestedModelSerializer):
         self._kwargs['partial'] = True
         return super().validate(attrs)
 
-    def validate(self, data):
+    def validate_ingredients(self, data):
         ingredients = self.initial_data.get('ingredients')
         if not ingredients:
             raise serializers.ValidationError({
