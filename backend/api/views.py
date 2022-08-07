@@ -47,7 +47,7 @@ class UserViewSet(UserViewSet):
 
     @action(
         detail=True,
-        methods=('post', 'delete',),
+        methods=('POST', 'DELETE',),
         permission_classes=(IsAuthenticated,)
     )
     def subscribe(self, request, id):
@@ -133,6 +133,7 @@ class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
 
     @action(
         detail=False,
+        methods=['GET'],
         permission_classes=(IsAuthenticated,)
     )
     def download_shopping_cart(self, request):
