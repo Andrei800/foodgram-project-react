@@ -18,7 +18,7 @@ from api.filters import IngredientFilter, RecipeFilter
 from api.mixins import (ListCreateRetrieveUpdateDestroyViewSet,
                         ListRetrieveViewSet)
 from api.pagination import CustomPagination
-from api.permissions import IsAdminOrReadOnly, IsAuthenticatedOwnerOrAdminOnly
+from api.permissions import IsAdminOrReadOnly, IsAuthenticatedOwnerOnly
 from api.serializers import (IngredientSerializer, RecipeMinifiedSerializer,
                              RecipeReadSerializer, RecipeSerializer,
                              SubscriptionSerializer, TagSerializer,
@@ -116,7 +116,7 @@ class RecipeQuerySet(models.QuerySet):
 
 
 class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
-    permission_classes = (IsAuthenticatedOwnerOrAdminOnly,)
+    permission_classes = (IsAuthenticatedOwnerOnly,)
     http_method_names = ('get', 'post', 'patch', 'delete',)
     pagination_class = CustomPagination
     filter_backends = (DjangoFilterBackend,)
