@@ -6,8 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import (IsAuthenticated,
-                                        IsAuthenticatedOrReadOnly)
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from recipes.models import (Favorite, Ingredient,
@@ -19,7 +18,7 @@ from api.filters import IngredientFilter, RecipeFilter
 from api.mixins import (ListCreateRetrieveUpdateDestroyViewSet,
                         ListRetrieveViewSet)
 from api.pagination import CustomPagination
-from api.permissions import IsAdminOrReadOnly
+from api.permissions import IsAdminOrReadOnly, IsAuthenticatedOwnerOrAdminOnly
 from api.serializers import (IngredientSerializer, RecipeMinifiedSerializer,
                              RecipeReadSerializer, RecipeSerializer,
                              SubscriptionSerializer, TagSerializer,
@@ -117,7 +116,7 @@ class RecipeQuerySet(models.QuerySet):
 
 
 class RecipeViewSet(ListCreateRetrieveUpdateDestroyViewSet):
-    permission_classes = (IsAuthenticatedOrReadOnly,)
+    permission_classes = (IsAuthenticatedOwnerOrAdminOnly,)
     http_method_names = ('get', 'post', 'patch', 'delete',)
     pagination_class = CustomPagination
     filter_backends = (DjangoFilterBackend,)
