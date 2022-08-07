@@ -3,23 +3,25 @@ from rest_framework.permissions import SAFE_METHODS, BasePermission
 
 class IsAuthenticatedOwnerOnly(BasePermission):
     message = "Access to edit only for owner!"
+    methods = ['POST', 'DELETE', 'PUT', 'PATCH']
 
     def has_permission(self, request, view):
-        return (
-            request.method in SAFE_METHODS
-            or request.user.is_authenticated
-        )
+        user = request.user
+        method = request.method
+        if method == 'GET':
+            return True
+        elif method in self.methods and user.is_authenticated:
+            return True
+        return False
 
     def has_object_permission(self, request, view, obj):
-        return (
-            request.method in SAFE_METHODS
-            or (
-                request.user.is_authenticated
-                and (
-                    obj.author == request.user
-                )
-            )
-        )
+        user = request.user
+        method = request.method
+        if method == 'GET':
+            return True
+        elif obj.author == user and method in ['DELETE', 'PUT', 'PATCH']:
+            return True
+        return False
 
 
 class IsAdminOrReadOnly(BasePermission):
