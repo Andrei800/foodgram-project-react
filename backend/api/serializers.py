@@ -178,15 +178,26 @@ class RecipeSerializer(WritableNestedModelSerializer):
         self._kwargs['partial'] = True
         return super().validate(attrs)
 
-    def validate_ingredients(self, value):
-        ingredient_id_list = []
-        for ingredient in value:
-            ingredient_id_list.append(ingredient['ingredient']['id'])
-        if len(ingredient_id_list) != len(set(ingredient_id_list)):
-            raise serializers.ValidationError(
-                'Ингредиент уже есть в рецепте!'
-            )
-        return value
+    def validate(self, data):
+        ingredients = self.initial_data.get('ingredients')
+        if not ingredients:
+            raise serializers.ValidationError({
+                'ingredients': 'Нужен хоть один ингридиент для рецепта'})
+        ingredient_list = []
+        for ingredient_item in ingredients:
+            ingredient = get_object_or_404(Ingredient,
+                                           id=ingredient_item['id'])
+            if ingredient in ingredient_list:
+                raise serializers.ValidationError('Ингредиент уже '
+                                                  'есть в рецепте')
+            ingredient_list.append(ingredient)
+            if int(ingredient_item['amount']) < 0:
+                raise serializers.ValidationError({
+                    'ingredients': ('Убедитесь, что значение '
+                                    'ингредиента больше 0')
+                })
+        data['ingredients'] = ingredients
+        return data
 
     def get_or_set_ingredients_in_recipe(
         self, ingredients_data, recipe,
