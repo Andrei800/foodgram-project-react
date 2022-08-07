@@ -1,3 +1,4 @@
+from django.forms import ValidationError
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from djoser.serializers import UserCreateSerializer, UserSerializer
@@ -174,26 +175,23 @@ class RecipeSerializer(WritableNestedModelSerializer):
             'cooking_time',
         )
 
-    def validate(self, data):
-        ingredients = self.initial_data.get('ingredients')
-        if not ingredients:
-            raise serializers.ValidationError({
-                'ingredients': 'Нужен хоть один ингридиент для рецепта'})
-        ingredient_list = []
-        for ingredient_item in ingredients:
-            ingredient = get_object_or_404(Ingredient,
-                                           id=ingredient_item['id'])
-            if ingredient in ingredient_list:
-                raise serializers.ValidationError('Ингридиенты должны '
-                                                  'быть уникальными')
-            ingredient_list.append(ingredient)
-            if int(ingredient_item['amount']) < 0:
-                raise serializers.ValidationError({
-                    'ingredients': ('Убедитесь, что значение количества '
-                                    'ингредиента больше 0')
-                })
-        data['ingredients'] = ingredients
-        return data
+    def validate(self, attrs):
+        if len(attrs['ingredients']) == 0:
+            raise ValidationError('В рецепте нет игредиентов')
+        ingredients_id = []
+        for ingredient in attrs['ingredients']:
+            if ingredient['amount'] <= 0:
+                raise ValidationError('Кольчество не может быть меньше 0')
+            ingredients_id.append(ingredient['ingredient']['id'])
+        if len(ingredients_id) > len(set(ingredients_id)):
+            raise ValidationError('Ингредиенты не могут повторяться')
+        if attrs['cooking_time'] <= 0:
+            raise ValidationError('Время приготовления не может быть меньше 0')
+        if len(attrs['tags']) < 0:
+            raise ValidationError('Добавьте теги')
+        if len(attrs['tags']) > len(set(attrs['tags'])):
+            raise ValidationError('Теги не могут повторяться')
+        return attrs
 
     def get_or_set_ingredients_in_recipe(
         self, ingredients_data, recipe,
